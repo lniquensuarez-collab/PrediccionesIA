@@ -1,8 +1,9 @@
 # ==============================================================================
-# 📱 ULTIMATE AI V14.0 - MOBILE APP EDITION (STREAMLIT)
+# 📱 ULTIMATE AI V14.1 - MOBILE APP EDITION (STREAMLIT HTML FIX)
 # ==============================================================================
 
 import streamlit as st
+import streamlit.components.v1 as components  # <-- NUEVO: Importación para HTML puro
 import pandas as pd
 import numpy as np
 from scipy.stats import poisson
@@ -103,16 +104,15 @@ def entrenar_ia(_df):
     return clf, le, h_mods, a_mods, team_stats
 
 # --- UI DE LA APLICACIÓN ---
-st.title("🏆 ULTIMATE AI V14.0")
+st.title("🏆 ULTIMATE AI V14.1")
 st.markdown("### Predicciones Globales de Selecciones")
 
-with st.spinner('Cargando base de datos y entrenando IA... (Esto toma 1 minuto la primera vez)'):
+with st.spinner('Cargando base de datos y entrenando IA...'):
     df_global = cargar_y_enriquecer_selecciones()
     clf, le, h_mods, a_mods, stats = entrenar_ia(df_global)
 
 equipos_activos = sorted([eq for eq in stats.keys() if len(stats[eq]['Pts']) > 5])
 
-# Diseño de columnas para móvil
 col1, col2 = st.columns(2)
 with col1:
     home = st.selectbox("🌍 Equipo 1 (Local):", equipos_activos, index=equipos_activos.index("Argentina") if "Argentina" in equipos_activos else 0)
@@ -162,7 +162,6 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
 
         def calc_poisson(expected, threshold): return poisson.sf(threshold, expected) * 100
         
-        # Ajustamos el HTML para que sea responsivo (se adapte al ancho del celular)
         html = f"""
         <style>
             .card {{ font-family: 'Segoe UI', sans-serif; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #ccc; overflow:hidden; width: 100%; }}
@@ -177,7 +176,7 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
             .section-title {{ padding: 8px 10px; font-weight: bold; color: #f8fafc; background: #334155; font-size: 0.8em; text-transform: uppercase; }}
             
             .stats-table {{ width: 100%; text-align: center; border-collapse: collapse; }}
-            .stats-table th {{ background: #f1f5f9; padding: 8px; font-size: 0.75em; color: #475569; }}
+            .stats-table th {{ background: #f1f5f9; padding: 8px; font-size: 0.75em; color: #475569; border-bottom: 2px solid #e2e8f0; }}
             .stats-table td {{ padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold; font-size: 0.9em; }}
             .lbl-col {{ text-align: left !important; padding-left: 10px !important; color: #64748b !important; }}
             
@@ -188,7 +187,7 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
         </style>
         
         <div class="card">
-            <div class="header">ANÁLISIS V14.0: {home[:15].upper()} VS {away[:15].upper()}</div>
+            <div class="header">ANÁLISIS V14.1: {home[:15].upper()} VS {away[:15].upper()}</div>
             
             <div class="teams-row">
                 <div class="team-nm">{home[:10]}</div>
@@ -231,4 +230,5 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
             </div>
         </div>
         """
-        st.markdown(html, unsafe_allow_html=True)
+        # <-- EL FIX ESTÁ AQUÍ -->
+        components.html(html, height=750, scrolling=True)
