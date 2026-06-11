@@ -105,7 +105,7 @@ def entrenar_ia(_df):
 
 # --- UI DE LA APLICACIÓN ---
 st.title("🏆 ULTIMATE AI V14.1")
-st.markdown("### Predicciones Globales de Selecciones")
+st.markdown("### Predicciones Globales de Selecciones   By. LNiquén S.")
 
 with st.spinner('Cargando base de datos y entrenando IA...'):
     df_global = cargar_y_enriquecer_selecciones()
