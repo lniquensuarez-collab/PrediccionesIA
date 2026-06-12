@@ -1,5 +1,5 @@
 # ==============================================================================
-# 📱 ULTIMATE AI V15.0 - DATOS REALES (ESPEJO NEUTRAL Y MARCADOR SINCRONIZADO)
+# 📱 ULTIMATE AI V15.1 - DATOS REALES (SIMETRÍA ABSOLUTA CORREGIDA)
 # ==============================================================================
 
 import streamlit as st
@@ -16,7 +16,7 @@ warnings.filterwarnings('ignore')
 
 st.set_page_config(page_title="AI Predicciones", page_icon="🏆", layout="centered")
 
-# --- FUNCIÓN: ESTADO DE FORMA OFICIAL (ÚLTIMOS 5 PARTIDOS) ---
+# --- FUNCIÓN: ESTADO DE FORMA OFICIAL ---
 def get_form_oficial(t, df_historico, fecha_partido):
     try:
         pasado = df_historico[
@@ -121,7 +121,7 @@ def entrenar_ia(_df):
     }
     return clf, le, h_mods, a_mods, team_stats
 
-st.title("🏆 ULTIMATE AI V15.0")
+st.title("🏆 ULTIMATE AI V15.1")
 st.markdown("### Predicciones IA (By L.Niquén)")
 
 df_global = cargar_y_enriquecer_selecciones()
@@ -145,9 +145,6 @@ col_opt1, col_opt2 = st.columns(2)
 with col_opt1: is_neutral = st.checkbox("Cancha Neutral", value=True)
 with col_opt2: is_qualifier = st.checkbox("Partido Oficial", value=True)
 
-# ==============================================================================
-# 🛡️ SELECTOR DE CONTEXTO Y LÓGICA DE LA IA
-# ==============================================================================
 st.markdown("---")
 contexto_partido = st.radio(
     "🛡️ Contexto del Partido (Nivel de Riesgo):",
@@ -194,14 +191,11 @@ Analiza el enfrentamiento entre {home} (Local) y {away} (Visitante).
 
 Basado en los datos y estadísticas proporcionadas, dame las probabilidades y tu mejor recomendación estructurada para este partido.
 """
-# ==============================================================================
 
 if st.button("🚀 GENERAR INFORME", use_container_width=True):
     if home == away:
         st.error("⚠️ Error: Selecciona equipos distintos.")
     else:
-        h_s, a_s = stats[home], stats[away]
-        
         def get_avg_predict(t_data, stat):
             arr = t_data[stat][-10:]
             return np.mean(arr) if len(arr) > 0 else 0.0
@@ -209,77 +203,69 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
         def get_form_predict(t_data): 
             return sum(t_data['Pts'][-10:])
             
-        h_rank = df_global[df_global['home_team'] == home]['home_rank'].iloc[-1] if not df_global[df_global['home_team'] == home].empty else 100
-        a_rank = df_global[df_global['away_team'] == away]['away_rank'].iloc[-1] if not df_global[df_global['away_team'] == away].empty else 100
         fecha_actual = pd.Timestamp.now()
         
-        # --- INPUT NORMAL ---
-        input_normal = pd.DataFrame([{
-            'H_GF': get_avg_predict(h_s, 'GF'), 'H_GC': get_avg_predict(h_s, 'GC'), 'H_S': get_avg_predict(h_s, 'S'), 
-            'H_ST': get_avg_predict(h_s, 'ST'), 'H_C': get_avg_predict(h_s, 'C'), 'H_Y': get_avg_predict(h_s, 'Y'), 'H_Form': get_form_predict(h_s),
-            'A_GF': get_avg_predict(a_s, 'GF'), 'A_GC': get_avg_predict(a_s, 'GC'), 'A_S': get_avg_predict(a_s, 'S'), 
-            'A_ST': get_avg_predict(a_s, 'ST'), 'A_C': get_avg_predict(a_s, 'C'), 'A_Y': get_avg_predict(a_s, 'Y'), 'A_Form': get_form_predict(a_s),
-            'Neutral': 1 if is_neutral else 0,
-            'H_Rank': h_rank, 'A_Rank': a_rank, 'Rank_Diff': a_rank - h_rank,
-            'H_Form_Official': get_form_oficial(home, df_global, fecha_actual),
-            'A_Form_Official': get_form_oficial(away, df_global, fecha_actual),
-            'Is_Qualifier': 1 if is_qualifier else 0
-        }])
-        
-        probs_n = clf.predict_proba(input_normal)[0]
+        # --- FUNCIÓN MAESTRA PARA CONSTRUIR INPUTS SIN ERRORES ---
+        def generar_input_ia(t_local, t_visita):
+            h_data, a_data = stats[t_local], stats[t_visita]
+            
+            hr = df_global[df_global['home_team'] == t_local]['home_rank'].iloc[-1] if not df_global[df_global['home_team'] == t_local].empty else 100
+            ar = df_global[df_global['away_team'] == t_visita]['away_rank'].iloc[-1] if not df_global[df_global['away_team'] == t_visita].empty else 100
+            
+            return pd.DataFrame([{
+                'H_GF': get_avg_predict(h_data, 'GF'), 'H_GC': get_avg_predict(h_data, 'GC'), 'H_S': get_avg_predict(h_data, 'S'), 
+                'H_ST': get_avg_predict(h_data, 'ST'), 'H_C': get_avg_predict(h_data, 'C'), 'H_Y': get_avg_predict(h_data, 'Y'), 'H_Form': get_form_predict(h_data),
+                'A_GF': get_avg_predict(a_data, 'GF'), 'A_GC': get_avg_predict(a_data, 'GC'), 'A_S': get_avg_predict(a_data, 'S'), 
+                'A_ST': get_avg_predict(a_data, 'ST'), 'A_C': get_avg_predict(a_data, 'C'), 'A_Y': get_avg_predict(a_data, 'Y'), 'A_Form': get_form_predict(a_data),
+                'Neutral': 1 if is_neutral else 0,
+                'H_Rank': hr, 'A_Rank': ar, 'Rank_Diff': ar - hr,
+                'H_Form_Official': get_form_oficial(t_local, df_global, fecha_actual),
+                'A_Form_Official': get_form_oficial(t_visita, df_global, fecha_actual),
+                'Is_Qualifier': 1 if is_qualifier else 0
+            }])
+
+        # 1. EVALUACIÓN NORMAL (Como dicta la pantalla)
+        input_n = generar_input_ia(home, away)
+        probs_n = clf.predict_proba(input_n)[0]
         cls = le.inverse_transform(clf.classes_)
         pmap_n = {c: p for c, p in zip(cls, probs_n)}
         
-        xg_h_n = max(0, h_mods['gol'].predict(input_normal)[0])
-        xg_a_n = max(0, a_mods['gol'].predict(input_normal)[0])
-        xc_h_n = max(0, h_mods['corn'].predict(input_normal)[0])
-        xc_a_n = max(0, a_mods['corn'].predict(input_normal)[0])
-        xs_h_n = max(0, h_mods['shot'].predict(input_normal)[0])
-        xs_a_n = max(0, a_mods['shot'].predict(input_normal)[0])
-        xst_h_n = max(0, h_mods['shot_t'].predict(input_normal)[0])
-        xst_a_n = max(0, a_mods['shot_t'].predict(input_normal)[0])
-        xy_h_n = max(0, h_mods['card'].predict(input_normal)[0])
-        xy_a_n = max(0, a_mods['card'].predict(input_normal)[0])
-        
-        # --- TEST-TIME AUGMENTATION (ESPEJO NEUTRAL) ---
+        # 2. LÓGICA DE ESPEJO (TEST-TIME AUGMENTATION PURA)
         if is_neutral:
-            input_inverso = pd.DataFrame([{
-                'H_GF': get_avg_predict(a_s, 'GF'), 'H_GC': get_avg_predict(a_s, 'GC'), 'H_S': get_avg_predict(a_s, 'S'), 
-                'H_ST': get_avg_predict(a_s, 'ST'), 'H_C': get_avg_predict(a_s, 'C'), 'H_Y': get_avg_predict(a_s, 'Y'), 'H_Form': get_form_predict(a_s),
-                'A_GF': get_avg_predict(h_s, 'GF'), 'A_GC': get_avg_predict(h_s, 'GC'), 'A_S': get_avg_predict(h_s, 'S'), 
-                'A_ST': get_avg_predict(h_s, 'ST'), 'A_C': get_avg_predict(h_s, 'C'), 'A_Y': get_avg_predict(h_s, 'Y'), 'A_Form': get_form_predict(h_s),
-                'Neutral': 1,
-                'H_Rank': a_rank, 'A_Rank': h_rank, 'Rank_Diff': h_rank - a_rank,
-                'H_Form_Official': get_form_oficial(away, df_global, fecha_actual),
-                'A_Form_Official': get_form_oficial(home, df_global, fecha_actual),
-                'Is_Qualifier': 1 if is_qualifier else 0
-            }])
-            
-            probs_i = clf.predict_proba(input_inverso)[0]
+            input_i = generar_input_ia(away, home)
+            probs_i = clf.predict_proba(input_i)[0]
             pmap_i = {c: p for c, p in zip(cls, probs_i)}
             
-            # Promediamos los resultados del motor cruzado
             p_h = (pmap_n.get('H', 0) + pmap_i.get('A', 0)) / 2
             p_a = (pmap_n.get('A', 0) + pmap_i.get('H', 0)) / 2
             p_d = (pmap_n.get('D', 0) + pmap_i.get('D', 0)) / 2
             
-            xg_h = (xg_h_n + max(0, a_mods['gol'].predict(input_inverso)[0])) / 2
-            xg_a = (xg_a_n + max(0, h_mods['gol'].predict(input_inverso)[0])) / 2
-            xc_h = (xc_h_n + max(0, a_mods['corn'].predict(input_inverso)[0])) / 2
-            xc_a = (xc_a_n + max(0, h_mods['corn'].predict(input_inverso)[0])) / 2
-            xs_h = (xs_h_n + max(0, a_mods['shot'].predict(input_inverso)[0])) / 2
-            xs_a = (xs_a_n + max(0, h_mods['shot'].predict(input_inverso)[0])) / 2
-            xst_h = (xst_h_n + max(0, a_mods['shot_t'].predict(input_inverso)[0])) / 2
-            xst_a = (xst_a_n + max(0, h_mods['shot_t'].predict(input_inverso)[0])) / 2
-            xy_h = (xy_h_n + max(0, a_mods['card'].predict(input_inverso)[0])) / 2
-            xy_a = (xy_a_n + max(0, h_mods['card'].predict(input_inverso)[0])) / 2
+            # Normalización estricta al 100%
+            tot_p = p_h + p_a + p_d
+            p_h, p_a, p_d = p_h/tot_p, p_a/tot_p, p_d/tot_p
+            
+            xg_h = (max(0, h_mods['gol'].predict(input_n)[0]) + max(0, a_mods['gol'].predict(input_i)[0])) / 2
+            xg_a = (max(0, a_mods['gol'].predict(input_n)[0]) + max(0, h_mods['gol'].predict(input_i)[0])) / 2
+            xc_h = (max(0, h_mods['corn'].predict(input_n)[0]) + max(0, a_mods['corn'].predict(input_i)[0])) / 2
+            xc_a = (max(0, a_mods['corn'].predict(input_n)[0]) + max(0, h_mods['corn'].predict(input_i)[0])) / 2
+            xs_h = (max(0, h_mods['shot'].predict(input_n)[0]) + max(0, a_mods['shot'].predict(input_i)[0])) / 2
+            xs_a = (max(0, a_mods['shot'].predict(input_n)[0]) + max(0, h_mods['shot'].predict(input_i)[0])) / 2
+            xst_h = (max(0, h_mods['shot_t'].predict(input_n)[0]) + max(0, a_mods['shot_t'].predict(input_i)[0])) / 2
+            xst_a = (max(0, a_mods['shot_t'].predict(input_n)[0]) + max(0, h_mods['shot_t'].predict(input_i)[0])) / 2
+            xy_h = (max(0, h_mods['card'].predict(input_n)[0]) + max(0, a_mods['card'].predict(input_i)[0])) / 2
+            xy_a = (max(0, a_mods['card'].predict(input_n)[0]) + max(0, h_mods['card'].predict(input_i)[0])) / 2
         else:
             p_h, p_d, p_a = pmap_n.get('H',0), pmap_n.get('D',0), pmap_n.get('A',0)
-            xg_h, xg_a = xg_h_n, xg_a_n
-            xc_h, xc_a = xc_h_n, xc_a_n
-            xs_h, xs_a = xs_h_n, xs_a_n
-            xst_h, xst_a = xst_h_n, xst_a_n
-            xy_h, xy_a = xy_h_n, xy_a_n
+            xg_h = max(0, h_mods['gol'].predict(input_n)[0])
+            xg_a = max(0, a_mods['gol'].predict(input_n)[0])
+            xc_h = max(0, h_mods['corn'].predict(input_n)[0])
+            xc_a = max(0, a_mods['corn'].predict(input_n)[0])
+            xs_h = max(0, h_mods['shot'].predict(input_n)[0])
+            xs_a = max(0, a_mods['shot'].predict(input_n)[0])
+            xst_h = max(0, h_mods['shot_t'].predict(input_n)[0])
+            xst_a = max(0, a_mods['shot_t'].predict(input_n)[0])
+            xy_h = max(0, h_mods['card'].predict(input_n)[0])
+            xy_a = max(0, a_mods['card'].predict(input_n)[0])
         
         tot_g = xg_h + xg_a; tot_c = xc_h + xc_a; tot_y = xy_h + xy_a
         
@@ -328,7 +314,7 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
         </style>
         
         <div class="card">
-            <div class="header">ANÁLISIS V15.0: {home[:15].upper()} VS {away[:15].upper()}</div>
+            <div class="header">ANÁLISIS V15.1: {home[:15].upper()} VS {away[:15].upper()}</div>
             
             <div class="teams-row">
                 <div class="team-nm">{home[:10]}</div>
