@@ -178,6 +178,20 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
             return sum(t_data['Pts'][-10:])
             
         h_rank = df_global[df_global['home_team'] == home]['home_rank'].iloc[-1] if not df_global[df_global['home_team'] == home].empty else 100
+        a_rank = df_global[df_global['away_team'] == away]['away_rank'].iloc[-1] if not df_global[df_global['away_team'] == away].empty else 100
+        fecha_actual = pd.Timestamp.now()
+        
+        input_ia = pd.DataFrame([{
+            'H_GF': get_avg(h_s, 'GF'), 'H_GC': get_avg(h_s, 'GC'), 'H_S': get_avg(h_s, 'S'), 
+            'H_ST': get_avg(h_s, 'ST'), 'H_C': get_avg(h_s, 'C'), 'H_Y': get_avg(h_s, 'Y'), 'H_Form': get_form(h_s),
+            'A_GF': get_avg(a_s, 'GF'), 'A_GC': get_avg(a_s, 'GC'), 'A_S': get_avg(a_s, 'S'), 
+            'A_ST': get_avg(a_s, 'ST'), 'A_C': get_avg(a_s, 'C'), 'A_Y': get_avg(a_s, 'Y'), 'A_Form': get_form(a_s),
+            'Neutral': 1 if is_neutral else 0,
+            'H_Rank': h_rank, 'A_Rank': a_rank, 'Rank_Diff': a_rank - h_rank,
+            'H_Form_Official': get_form_oficial(home, df_global, fecha_actual),
+            'A_Form_Official': get_form_oficial(away, df_global, fecha_actual),
+            'Is_Qualifier': 1 if is_qualifier else 0
+        }])
             
         # Extraer ranking actual de la base de datos simulada/cruzada
         h_rank = df_global[df_global['home_team'] == home]['home_rank'].iloc[-1] if not df_global[df_global['home_team'] == home].empty else 100
