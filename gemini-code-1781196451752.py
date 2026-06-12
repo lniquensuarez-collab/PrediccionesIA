@@ -1,9 +1,9 @@
 # ==============================================================================
-# 📱 ULTIMATE AI V14.1 - MOBILE APP EDITION (STREAMLIT HTML FIX)
+# 📱 ULTIMATE AI V14.2 - MOBILE APP EDITION (CON RANKING Y ESTADO DE FORMA)
 # ==============================================================================
 
 import streamlit as st
-import streamlit.components.v1 as components  # <-- NUEVO: Importación para HTML puro
+import streamlit.components.v1 as components  
 import pandas as pd
 import numpy as np
 from scipy.stats import poisson
@@ -18,6 +18,24 @@ st.set_page_config(page_title="AI Predicciones", page_icon="🏆", layout="cente
 
 URL_INTERNACIONAL = "https://raw.githubusercontent.com/martj42/international_results/master/results.csv"
 
+# --- NUEVA FUNCIÓN: ESTADO DE FORMA OFICIAL (ELIMINATORIAS/TORNEOS) ---
+def get_form_oficial(t, df_historico, fecha_partido):
+    try:
+        pasado = df_historico[
+            ((df_historico['home_team'] == t) | (df_historico['away_team'] == t)) & 
+            (df_historico['date'] < fecha_partido) &
+            (df_historico['tournament'] != 'Friendly') # Excluimos amistosos
+        ].tail(5) # Últimos 5 partidos oficiales
+        
+        puntos = 0
+        for _, row in pasado.iterrows():
+            if row['home_team'] == t and row['home_score'] > row['away_score']: puntos += 3
+            elif row['away_team'] == t and row['away_score'] > row['home_score']: puntos += 3
+            elif row['home_score'] == row['away_score']: puntos += 1
+        return puntos
+    except:
+        return 0
+
 # --- CACHÉ PARA MAYOR VELOCIDAD EN LA APP ---
 @st.cache_data(show_spinner=False)
 def cargar_y_enriquecer_selecciones():
@@ -26,6 +44,16 @@ def cargar_y_enriquecer_selecciones():
         df['date'] = pd.to_datetime(df['date'], errors='coerce')
         df = df[df['date'].dt.year >= 2010].dropna(subset=['home_score', 'away_score']).copy()
         
+        # --- NUEVO: INTEGRACIÓN DE RANKING FIFA ---
+        # (Para que sea funcional ahora, simulamos rankings fijos. 
+        # Cuando tengas el CSV real, borra este bloque y usa pd.merge_asof como se explicó)
+        np.random.seed(42)
+        equipos_unicos = pd.concat([df['home_team'], df['away_team']]).unique()
+        simulacion_ranking = {eq: np.random.randint(1, 210) for eq in equipos_unicos}
+        df['home_rank'] = df['home_team'].map(simulacion_ranking)
+        df['away_rank'] = df['away_team'].map(simulacion_ranking)
+        # ------------------------------------------
+
         np.random.seed(42)
         n = len(df)
         df['HS'] = (df['home_score'] * 2.5 + np.random.randint(4, 10, n)).astype(int)
@@ -60,7 +88,15 @@ def entrenar_ia(_df):
             'H_ST': get_avg(h, 'ST'), 'H_C': get_avg(h, 'C'), 'H_Y': get_avg(h, 'Y'), 'H_Form': get_form(h),
             'A_GF': get_avg(a, 'GF'), 'A_GC': get_avg(a, 'GC'), 'A_S': get_avg(a, 'S'), 
             'A_ST': get_avg(a, 'ST'), 'A_C': get_avg(a, 'C'), 'A_Y': get_avg(a, 'Y'), 'A_Form': get_form(a),
-            'Neutral': 1 if row['neutral'] else 0
+            'Neutral': 1 if row['neutral'] else 0,
+            
+            # --- NUEVO: MOTOR ML MODIFICADO CON RANKING Y FORMA ---
+            'H_Rank': row['home_rank'],
+            'A_Rank': row['away_rank'],
+            'Rank_Diff': row['away_rank'] - row['home_rank'],
+            'H_Form_Official': get_form_oficial(h, _df, row['date']),
+            'A_Form_Official': get_form_oficial(a, _df, row['date']),
+            'Is_Qualifier': 1 if 'qualification' in str(row['tournament']).lower() else 0
         })
         
         targets['res'].append(row['FTR'])
@@ -104,10 +140,10 @@ def entrenar_ia(_df):
     return clf, le, h_mods, a_mods, team_stats
 
 # --- UI DE LA APLICACIÓN ---
-st.title("🏆 ULTIMATE AI V14.1")
-st.markdown("### Predicciones Globales de Selecciones   By. LNiquén S.")
+st.title("🏆 ULTIMATE AI V14.2")
+st.markdown("### Predicciones Globales de Selecciones (Avanzado)")
 
-with st.spinner('Cargando base de datos y entrenando IA...'):
+with st.spinner('Cargando base de datos, rankings y entrenando IA...'):
     df_global = cargar_y_enriquecer_selecciones()
     clf, le, h_mods, a_mods, stats = entrenar_ia(df_global)
 
@@ -119,7 +155,12 @@ with col1:
 with col2:
     away = st.selectbox("🌍 Equipo 2 (Visita):", equipos_activos, index=equipos_activos.index("Brazil") if "Brazil" in equipos_activos else 1)
 
-is_neutral = st.checkbox("Cancha Neutral", value=True)
+# --- NUEVOS CONTROLES PARA LA IA ---
+col_opt1, col_opt2 = st.columns(2)
+with col_opt1:
+    is_neutral = st.checkbox("Cancha Neutral", value=True)
+with col_opt2:
+    is_qualifier = st.checkbox("Partido Oficial/Eliminatoria", value=True)
 
 if st.button("🚀 GENERAR INFORME", use_container_width=True):
     if home == away:
@@ -132,12 +173,25 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
             return np.mean(arr) if len(arr) > 0 else 0.0
         def get_form(t_data): return sum(t_data['Pts'][-10:])
             
+        # Extraer ranking actual de la base de datos simulada/cruzada
+        h_rank = df_global[df_global['home_team'] == home]['home_rank'].iloc[-1] if not df_global[df_global['home_team'] == home].empty else 100
+        a_rank = df_global[df_global['away_team'] == away]['away_rank'].iloc[-1] if not df_global[df_global['away_team'] == away].empty else 100
+        fecha_actual = pd.Timestamp.now()
+        
         input_ia = pd.DataFrame([{
             'H_GF': get_avg(h_s, 'GF'), 'H_GC': get_avg(h_s, 'GC'), 'H_S': get_avg(h_s, 'S'), 
             'H_ST': get_avg(h_s, 'ST'), 'H_C': get_avg(h_s, 'C'), 'H_Y': get_avg(h_s, 'Y'), 'H_Form': get_form(h_s),
             'A_GF': get_avg(a_s, 'GF'), 'A_GC': get_avg(a_s, 'GC'), 'A_S': get_avg(a_s, 'S'), 
             'A_ST': get_avg(a_s, 'ST'), 'A_C': get_avg(a_s, 'C'), 'A_Y': get_avg(a_s, 'Y'), 'A_Form': get_form(a_s),
-            'Neutral': 1 if is_neutral else 0
+            'Neutral': 1 if is_neutral else 0,
+            
+            # --- NUEVO: PARÁMETROS ENVIADOS AL MODELO ---
+            'H_Rank': h_rank,
+            'A_Rank': a_rank,
+            'Rank_Diff': a_rank - h_rank,
+            'H_Form_Official': get_form_oficial(home, df_global, fecha_actual),
+            'A_Form_Official': get_form_oficial(away, df_global, fecha_actual),
+            'Is_Qualifier': 1 if is_qualifier else 0
         }])
         
         probs = clf.predict_proba(input_ia)[0]
@@ -181,54 +235,4 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
             .lbl-col {{ text-align: left !important; padding-left: 10px !important; color: #64748b !important; }}
             
             .flex-markets {{ display: flex; padding: 10px; gap: 10px; background: #f8fafc; flex-wrap: wrap; }}
-            .mkt-box {{ flex: 1 1 45%; background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px; text-align: center; }}
-            .mkt-title {{ font-size: 0.7em; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }}
-            .mkt-val {{ font-size: 1.1em; font-weight: 900; color: #0f172a; }}
-        </style>
-        
-        <div class="card">
-            <div class="header">ANÁLISIS V14.1: {home[:15].upper()} VS {away[:15].upper()}</div>
-            
-            <div class="teams-row">
-                <div class="team-nm">{home[:10]}</div>
-                <div class="vs-tag">VS</div>
-                <div class="team-nm">{away[:10]}</div>
-            </div>
-            
-            <div class="win-bar">
-                <div class="wb-part" style="width:{p_h*100}%; background:#3b82f6;"></div>
-                <div class="wb-part" style="width:{p_d*100}%; background:#94a3b8;"></div>
-                <div class="wb-part" style="width:{p_a*100}%; background:#ef4444;"></div>
-            </div>
-            <div style="display:flex; justify-content:space-between; padding: 5px 10px; font-size:0.75em; font-weight:bold; background:white;">
-                <span style="color:#3b82f6">{p_h*100:.1f}%</span>
-                <span style="color:#64748b">EMP: {p_d*100:.1f}%</span>
-                <span style="color:#ef4444">{p_a*100:.1f}%</span>
-            </div>
-            
-            <div class="section-title">MÉTRICAS (xSTATS)</div>
-            <table class="stats-table">
-                <tr>
-                    <th class="lbl-col">MÉTRICA</th>
-                    <th>{home[:3].upper()}</th>
-                    <th>{away[:3].upper()}</th>
-                    <th style="color:#166534">TOTAL</th>
-                </tr>
-                <tr><td class="lbl-col">⚽ xG</td><td>{xg_h:.2f}</td><td>{xg_a:.2f}</td><td style="color:#166534">{tot_g:.2f}</td></tr>
-                <tr><td class="lbl-col">🚩 Córners</td><td>{xc_h:.1f}</td><td>{xc_a:.1f}</td><td style="color:#166534">{tot_c:.1f}</td></tr>
-                <tr><td class="lbl-col">🎯 T. Arco</td><td style="color:#0284c7">{xst_h:.1f}</td><td style="color:#0284c7">{xst_a:.1f}</td><td style="color:#166534">{xst_h+xst_a:.1f}</td></tr>
-                <tr><td class="lbl-col">🔫 T. Totales</td><td>{xs_h:.1f}</td><td>{xs_a:.1f}</td><td style="color:#166534">{xs_h+xs_a:.1f}</td></tr>
-                <tr><td class="lbl-col">🟨 Tarjetas</td><td style="color:#d97706">{xy_h:.1f}</td><td style="color:#d97706">{xy_a:.1f}</td><td style="color:#166534">{tot_y:.1f}</td></tr>
-            </table>
-
-            <div class="section-title">MERCADOS ESTRATÉGICOS</div>
-            <div class="flex-markets">
-                <div class="mkt-box"><div class="mkt-title">Over 2.5</div><div class="mkt-val" style="color:{'#166534' if calc_poisson(tot_g, 2.5)>55 else '#991b1b'}">{calc_poisson(tot_g, 2.5):.1f}%</div></div>
-                <div class="mkt-box"><div class="mkt-title">BTTS</div><div class="mkt-val">{(1-poisson.pmf(0, xg_h))*(1-poisson.pmf(0, xg_a))*100:.1f}%</div></div>
-                <div class="mkt-box"><div class="mkt-title">Over 8.5 Córners</div><div class="mkt-val">{calc_poisson(tot_c, 8.5):.1f}%</div></div>
-                <div class="mkt-box"><div class="mkt-title">Top Marcador</div><div class="mkt-val" style="color:#0284c7;">{top_scores[0]['score']} ({top_scores[0]['prob']:.0f}%)</div></div>
-            </div>
-        </div>
-        """
-        # <-- EL FIX ESTÁ AQUÍ -->
-        components.html(html, height=750, scrolling=True)
+            .mkt-box {{ flex: 1
