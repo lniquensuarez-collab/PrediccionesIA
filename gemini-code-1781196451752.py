@@ -173,7 +173,11 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
         def get_avg(t_data, stat):
             arr = t_data[stat][-10:]
             return np.mean(arr) if len(arr) > 0 else 0.0
-        def get_form(t_data): return sum(t_data['Pts'][-10:])
+            
+        def get_form(t_data): 
+            return sum(t_data['Pts'][-10:])
+            
+        h_rank = df_global[df_global['home_team'] == home]['home_rank'].iloc[-1] if not df_global[df_global['home_team'] == home].empty else 100
             
         # Extraer ranking actual de la base de datos simulada/cruzada
         h_rank = df_global[df_global['home_team'] == home]['home_rank'].iloc[-1] if not df_global[df_global['home_team'] == home].empty else 100
