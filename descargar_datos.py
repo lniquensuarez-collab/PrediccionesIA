@@ -24,7 +24,7 @@ COMPETICIONES = {
 
 # Calcula dinámicamente el año actual y el anterior
 año_actual = datetime.now().year
-TEMPORADAS = [str(año_actual - 1), str(año_actual)] 
+TEMPORADAS = ["2023", "2024", "2025", "2026"]
 LIMITE_DIARIO = 90
 ARCHIVO_DATOS = 'datos_reales_selecciones.csv'
 
