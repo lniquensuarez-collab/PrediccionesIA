@@ -2,12 +2,13 @@ import requests
 import pandas as pd
 import time
 import os
+from datetime import datetime
 
 # ==============================================================================
-# 🤖 BOT EXTRACTOR INTELIGENTE - API-FOOTBALL (DESCARGA EN CUOTAS)
+# 🤖 BOT EXTRACTOR INTELIGENTE - API-FOOTBALL (ÚLTIMOS 2 AÑOS)
 # ==============================================================================
 
-API_KEY = "TU_CLAVE_DE_RAPIDAPI_AQUI" # Reemplaza con tu clave
+API_KEY = os.environ.get("RAPIDAPI_KEY") # O pon tu clave entre comillas si lo corres local
 HEADERS = {
     "X-RapidAPI-Key": API_KEY,
     "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com"
@@ -20,7 +21,10 @@ COMPETICIONES = {
     "Eliminatorias CONMEBOL": 340,
     "Eliminatorias UEFA": 34
 }
-TEMPORADAS = ["2023", "2024"]
+
+# <-- CORRECCIÓN: Calcula dinámicamente el año actual y el anterior -->
+año_actual = datetime.now().year
+TEMPORADAS = [str(año_actual - 1), str(año_actual)] 
 LIMITE_DIARIO = 90
 ARCHIVO_DATOS = 'datos_reales_selecciones.csv'
 
