@@ -241,12 +241,33 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
         
         tot_g = xg_h + xg_a; tot_c = xc_h + xc_a; tot_y = xy_h + xy_a
         
+# --- NUEVO CÁLCULO DE MARCADOR PONDERADO ---
         matriz_scores = []
+        suma_probabilidades = 0
+        
         for i in range(6): 
             for j in range(6): 
-                prob = poisson.pmf(i, xg_h) * poisson.pmf(j, xg_a) * 100
-                matriz_scores.append({'score': f"{i} - {j}", 'prob': prob})
+                prob_poisson = poisson.pmf(i, xg_h) * poisson.pmf(j, xg_a)
+                
+                # Sincronizar Poisson con la predicción del Machine Learning
+                if i > j:
+                    peso_ml = p_h  # Gana Local
+                elif i < j:
+                    peso_ml = p_a  # Gana Visita
+                else:
+                    peso_ml = p_d  # Empate
+                    
+                prob_combinada = prob_poisson * peso_ml
+                suma_probabilidades += prob_combinada
+                
+                matriz_scores.append({'score': f"{i} - {j}", 'prob_combinada': prob_combinada})
+                
+        # Normalizar las probabilidades al 100%
+        for score in matriz_scores:
+            score['prob'] = (score['prob_combinada'] / suma_probabilidades) * 100 if suma_probabilidades > 0 else 0
+            
         top_scores = sorted(matriz_scores, key=lambda x: x['prob'], reverse=True)[:3]
+        # -------------------------------------------
 
         def calc_poisson(expected, threshold): return poisson.sf(threshold, expected) * 100
         
