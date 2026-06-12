@@ -1,5 +1,5 @@
 # ==============================================================================
-# 📱 ULTIMATE AI V14.8 - DATOS REALES (ÚLTIMOS 2 AÑOS / RACHA 10 PARTIDOS)
+# 📱 ULTIMATE AI V15.0 - DATOS REALES (ESPEJO NEUTRAL Y MARCADOR SINCRONIZADO)
 # ==============================================================================
 
 import streamlit as st
@@ -121,7 +121,7 @@ def entrenar_ia(_df):
     }
     return clf, le, h_mods, a_mods, team_stats
 
-st.title("🏆 ULTIMATE AI")
+st.title("🏆 ULTIMATE AI V15.0")
 st.markdown("### Predicciones IA (By L.Niquén)")
 
 df_global = cargar_y_enriquecer_selecciones()
@@ -137,9 +137,9 @@ equipos_activos = sorted([eq for eq in stats.keys() if len(stats[eq]['Pts']) > 0
 
 col1, col2 = st.columns(2)
 with col1:
-    home = st.selectbox("🌍 Equipo 1 (Local):", equipos_activos, index=0)
+    home = st.selectbox("🌍 Equipo 1 (Local / Izquierda):", equipos_activos, index=0)
 with col2:
-    away = st.selectbox("🌍 Equipo 2 (Visita):", equipos_activos, index=1 if len(equipos_activos)>1 else 0)
+    away = st.selectbox("🌍 Equipo 2 (Visita / Derecha):", equipos_activos, index=1 if len(equipos_activos)>1 else 0)
 
 col_opt1, col_opt2 = st.columns(2)
 with col_opt1: is_neutral = st.checkbox("Cancha Neutral", value=True)
@@ -157,7 +157,6 @@ contexto_partido = st.radio(
     ]
 )
 
-# Lógica de mercados según el contexto seleccionado
 instrucciones_mercado = ""
 
 if "Eliminación" in contexto_partido:
@@ -178,7 +177,6 @@ else:
     3. Ambos Equipos Anotan (BTTS - Sí / No): Elimina la necesidad de adivinar quién se llevará los 3 puntos. Solo pregúntate: ¿Ambos tienen capacidad de hacerse daño? Busca patrones de ida y vuelta constante. Ideal para equipos con gran poderío en la delantera pero estadísticas pobres para mantener su portería a cero.
     """
 
-# Regla de restricción general que la IA debe aplicar siempre
 restricciones_mercado = """
 🚫 MERCADOS QUE DEBES EVITAR (Alta varianza):
 * Marcador Exacto: Es una lotería. Matemáticamente es casi imposible de predecir de forma consistente.
@@ -186,7 +184,6 @@ restricciones_mercado = """
 Nunca recomiendes estos dos mercados en tu análisis final.
 """
 
-# Estructura del Prompt lista para ser consumida
 prompt_ia = f"""
 Eres un analista deportivo experto en estadística avanzada.
 Analiza el enfrentamiento entre {home} (Local) y {away} (Visitante).
@@ -216,7 +213,8 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
         a_rank = df_global[df_global['away_team'] == away]['away_rank'].iloc[-1] if not df_global[df_global['away_team'] == away].empty else 100
         fecha_actual = pd.Timestamp.now()
         
-        input_ia = pd.DataFrame([{
+        # --- INPUT NORMAL ---
+        input_normal = pd.DataFrame([{
             'H_GF': get_avg_predict(h_s, 'GF'), 'H_GC': get_avg_predict(h_s, 'GC'), 'H_S': get_avg_predict(h_s, 'S'), 
             'H_ST': get_avg_predict(h_s, 'ST'), 'H_C': get_avg_predict(h_s, 'C'), 'H_Y': get_avg_predict(h_s, 'Y'), 'H_Form': get_form_predict(h_s),
             'A_GF': get_avg_predict(a_s, 'GF'), 'A_GC': get_avg_predict(a_s, 'GC'), 'A_S': get_avg_predict(a_s, 'S'), 
@@ -228,46 +226,84 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
             'Is_Qualifier': 1 if is_qualifier else 0
         }])
         
-        probs = clf.predict_proba(input_ia)[0]
+        probs_n = clf.predict_proba(input_normal)[0]
         cls = le.inverse_transform(clf.classes_)
-        pmap = {c: p for c, p in zip(cls, probs)}
-        p_h, p_d, p_a = pmap.get('H',0), pmap.get('D',0), pmap.get('A',0)
+        pmap_n = {c: p for c, p in zip(cls, probs_n)}
         
-        xg_h = max(0, h_mods['gol'].predict(input_ia)[0]); xg_a = max(0, a_mods['gol'].predict(input_ia)[0])
-        xc_h = max(0, h_mods['corn'].predict(input_ia)[0]); xc_a = max(0, a_mods['corn'].predict(input_ia)[0])
-        xs_h = max(0, h_mods['shot'].predict(input_ia)[0]); xs_a = max(0, a_mods['shot'].predict(input_ia)[0])
-        xst_h = max(0, h_mods['shot_t'].predict(input_ia)[0]); xst_a = max(0, a_mods['shot_t'].predict(input_ia)[0])
-        xy_h = max(0, h_mods['card'].predict(input_ia)[0]); xy_a = max(0, a_mods['card'].predict(input_ia)[0])
+        xg_h_n = max(0, h_mods['gol'].predict(input_normal)[0])
+        xg_a_n = max(0, a_mods['gol'].predict(input_normal)[0])
+        xc_h_n = max(0, h_mods['corn'].predict(input_normal)[0])
+        xc_a_n = max(0, a_mods['corn'].predict(input_normal)[0])
+        xs_h_n = max(0, h_mods['shot'].predict(input_normal)[0])
+        xs_a_n = max(0, a_mods['shot'].predict(input_normal)[0])
+        xst_h_n = max(0, h_mods['shot_t'].predict(input_normal)[0])
+        xst_a_n = max(0, a_mods['shot_t'].predict(input_normal)[0])
+        xy_h_n = max(0, h_mods['card'].predict(input_normal)[0])
+        xy_a_n = max(0, a_mods['card'].predict(input_normal)[0])
+        
+        # --- TEST-TIME AUGMENTATION (ESPEJO NEUTRAL) ---
+        if is_neutral:
+            input_inverso = pd.DataFrame([{
+                'H_GF': get_avg_predict(a_s, 'GF'), 'H_GC': get_avg_predict(a_s, 'GC'), 'H_S': get_avg_predict(a_s, 'S'), 
+                'H_ST': get_avg_predict(a_s, 'ST'), 'H_C': get_avg_predict(a_s, 'C'), 'H_Y': get_avg_predict(a_s, 'Y'), 'H_Form': get_form_predict(a_s),
+                'A_GF': get_avg_predict(h_s, 'GF'), 'A_GC': get_avg_predict(h_s, 'GC'), 'A_S': get_avg_predict(h_s, 'S'), 
+                'A_ST': get_avg_predict(h_s, 'ST'), 'A_C': get_avg_predict(h_s, 'C'), 'A_Y': get_avg_predict(h_s, 'Y'), 'A_Form': get_form_predict(h_s),
+                'Neutral': 1,
+                'H_Rank': a_rank, 'A_Rank': h_rank, 'Rank_Diff': h_rank - a_rank,
+                'H_Form_Official': get_form_oficial(away, df_global, fecha_actual),
+                'A_Form_Official': get_form_oficial(home, df_global, fecha_actual),
+                'Is_Qualifier': 1 if is_qualifier else 0
+            }])
+            
+            probs_i = clf.predict_proba(input_inverso)[0]
+            pmap_i = {c: p for c, p in zip(cls, probs_i)}
+            
+            # Promediamos los resultados del motor cruzado
+            p_h = (pmap_n.get('H', 0) + pmap_i.get('A', 0)) / 2
+            p_a = (pmap_n.get('A', 0) + pmap_i.get('H', 0)) / 2
+            p_d = (pmap_n.get('D', 0) + pmap_i.get('D', 0)) / 2
+            
+            xg_h = (xg_h_n + max(0, a_mods['gol'].predict(input_inverso)[0])) / 2
+            xg_a = (xg_a_n + max(0, h_mods['gol'].predict(input_inverso)[0])) / 2
+            xc_h = (xc_h_n + max(0, a_mods['corn'].predict(input_inverso)[0])) / 2
+            xc_a = (xc_a_n + max(0, h_mods['corn'].predict(input_inverso)[0])) / 2
+            xs_h = (xs_h_n + max(0, a_mods['shot'].predict(input_inverso)[0])) / 2
+            xs_a = (xs_a_n + max(0, h_mods['shot'].predict(input_inverso)[0])) / 2
+            xst_h = (xst_h_n + max(0, a_mods['shot_t'].predict(input_inverso)[0])) / 2
+            xst_a = (xst_a_n + max(0, h_mods['shot_t'].predict(input_inverso)[0])) / 2
+            xy_h = (xy_h_n + max(0, a_mods['card'].predict(input_inverso)[0])) / 2
+            xy_a = (xy_a_n + max(0, h_mods['card'].predict(input_inverso)[0])) / 2
+        else:
+            p_h, p_d, p_a = pmap_n.get('H',0), pmap_n.get('D',0), pmap_n.get('A',0)
+            xg_h, xg_a = xg_h_n, xg_a_n
+            xc_h, xc_a = xc_h_n, xc_a_n
+            xs_h, xs_a = xs_h_n, xs_a_n
+            xst_h, xst_a = xst_h_n, xst_a_n
+            xy_h, xy_a = xy_h_n, xy_a_n
         
         tot_g = xg_h + xg_a; tot_c = xc_h + xc_a; tot_y = xy_h + xy_a
         
-# --- NUEVO CÁLCULO DE MARCADOR PONDERADO ---
+        # --- CÁLCULO DE MARCADOR PONDERADO SINCRONIZADO ---
         matriz_scores = []
         suma_probabilidades = 0
-        
         for i in range(6): 
             for j in range(6): 
                 prob_poisson = poisson.pmf(i, xg_h) * poisson.pmf(j, xg_a)
-                
-                # Sincronizar Poisson con la predicción del Machine Learning
                 if i > j:
-                    peso_ml = p_h  # Gana Local
+                    peso_ml = p_h
                 elif i < j:
-                    peso_ml = p_a  # Gana Visita
+                    peso_ml = p_a
                 else:
-                    peso_ml = p_d  # Empate
-                    
+                    peso_ml = p_d
+                
                 prob_combinada = prob_poisson * peso_ml
                 suma_probabilidades += prob_combinada
-                
                 matriz_scores.append({'score': f"{i} - {j}", 'prob_combinada': prob_combinada})
                 
-        # Normalizar las probabilidades al 100%
         for score in matriz_scores:
             score['prob'] = (score['prob_combinada'] / suma_probabilidades) * 100 if suma_probabilidades > 0 else 0
             
         top_scores = sorted(matriz_scores, key=lambda x: x['prob'], reverse=True)[:3]
-        # -------------------------------------------
 
         def calc_poisson(expected, threshold): return poisson.sf(threshold, expected) * 100
         
@@ -292,7 +328,7 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
         </style>
         
         <div class="card">
-            <div class="header">ANÁLISIS V14.8: {home[:15].upper()} VS {away[:15].upper()}</div>
+            <div class="header">ANÁLISIS V15.0: {home[:15].upper()} VS {away[:15].upper()}</div>
             
             <div class="teams-row">
                 <div class="team-nm">{home[:10]}</div>
