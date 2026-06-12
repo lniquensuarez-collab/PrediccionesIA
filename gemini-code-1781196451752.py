@@ -24,8 +24,8 @@ def get_form_oficial(t, df_historico, fecha_partido):
         pasado = df_historico[
             ((df_historico['home_team'] == t) | (df_historico['away_team'] == t)) & 
             (df_historico['date'] < fecha_partido) &
-            (df_historico['tournament'] != 'Friendly') # Excluimos amistosos
-        ].tail(5) # Últimos 5 partidos oficiales
+            (df_historico['tournament'] != 'Friendly') # Mejor excluir amistosos para esta métrica
+        ].tail(5) # <-- Vuelve a tomar los últimos 5 oficiales
         
         puntos = 0
         for _, row in pasado.iterrows():
@@ -34,7 +34,7 @@ def get_form_oficial(t, df_historico, fecha_partido):
             elif row['home_score'] == row['away_score']: puntos += 1
         return puntos
     except:
-        return 0
+        return
 
 # --- CACHÉ PARA MAYOR VELOCIDAD EN LA APP ---
 @st.cache_data(show_spinner=False)
@@ -78,10 +78,12 @@ def entrenar_ia(_df):
     
     for idx, row in _df.iterrows():
         h, a = row['home_team'], row['away_team']
-        def get_avg(t, stat):
-            arr = team_stats[t][stat][-10:]
+    def get_avg(t_data, stat):
+            arr = t_data[stat][-10:]
             return np.mean(arr) if len(arr) > 0 else 0.0
-        def get_form(t): return sum(team_stats[t]['Pts'][-10:])
+            
+        def get_form(t_data): 
+            return sum(t_data['Pts'][-10:])
             
         X_list.append({
             'H_GF': get_avg(h, 'GF'), 'H_GC': get_avg(h, 'GC'), 'H_S': get_avg(h, 'S'), 
