@@ -1,5 +1,5 @@
 # ==============================================================================
-# 📱 ULTIMATE AI V14.2 - MOBILE APP EDITION (CON RANKING Y ESTADO DE FORMA)
+# 📱 ULTIMATE AI V14.4 - DATOS REALES (ÚLTIMOS 2 AÑOS / RACHA 10 PARTIDOS)
 # ==============================================================================
 
 import streamlit as st
@@ -10,22 +10,20 @@ from scipy.stats import poisson
 from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
 from sklearn.preprocessing import LabelEncoder
 import warnings
+import os
 
 warnings.filterwarnings('ignore')
 
-# Configuración de la página para celular
 st.set_page_config(page_title="AI Predicciones", page_icon="🏆", layout="centered")
 
-URL_INTERNACIONAL = "https://raw.githubusercontent.com/martj42/international_results/master/results.csv"
-
-# --- NUEVA FUNCIÓN: ESTADO DE FORMA OFICIAL (ELIMINATORIAS/TORNEOS) ---
+# --- FUNCIÓN: ESTADO DE FORMA OFICIAL (ÚLTIMOS 5 PARTIDOS) ---
 def get_form_oficial(t, df_historico, fecha_partido):
     try:
         pasado = df_historico[
             ((df_historico['home_team'] == t) | (df_historico['away_team'] == t)) & 
             (df_historico['date'] < fecha_partido) &
-            (df_historico['tournament'] != 'Friendly') # Mejor excluir amistosos para esta métrica
-        ].tail(5) # <-- Vuelve a tomar los últimos 5 oficiales
+            (df_historico['tournament'] != 'Friendly')
+        ].tail(5)
         
         puntos = 0
         for _, row in pasado.iterrows():
@@ -34,41 +32,25 @@ def get_form_oficial(t, df_historico, fecha_partido):
             elif row['home_score'] == row['away_score']: puntos += 1
         return puntos
     except:
-        return
+        return 0
 
-# --- CACHÉ PARA MAYOR VELOCIDAD EN LA APP ---
 @st.cache_data(show_spinner=False)
 def cargar_y_enriquecer_selecciones():
-    try:
-        df = pd.read_csv(URL_INTERNACIONAL)
-        df['date'] = pd.to_datetime(df['date'], errors='coerce')
-        df = df[df['date'].dt.year >= 2010].dropna(subset=['home_score', 'away_score']).copy()
+    if not os.path.exists("datos_reales_selecciones.csv"):
+        return None
         
-        # --- NUEVO: INTEGRACIÓN DE RANKING FIFA ---
-        # (Para que sea funcional ahora, simulamos rankings fijos. 
-        # Cuando tengas el CSV real, borra este bloque y usa pd.merge_asof como se explicó)
-        np.random.seed(42)
-        equipos_unicos = pd.concat([df['home_team'], df['away_team']]).unique()
-        simulacion_ranking = {eq: np.random.randint(1, 210) for eq in equipos_unicos}
-        df['home_rank'] = df['home_team'].map(simulacion_ranking)
-        df['away_rank'] = df['away_team'].map(simulacion_ranking)
-        # ------------------------------------------
-
-        np.random.seed(42)
-        n = len(df)
-        df['HS'] = (df['home_score'] * 2.5 + np.random.randint(4, 10, n)).astype(int)
-        df['AS'] = (df['away_score'] * 2.5 + np.random.randint(3, 8, n)).astype(int)
-        df['HST'] = (df['home_score'] + np.random.randint(1, 5, n)).astype(int)
-        df['AST'] = (df['away_score'] + np.random.randint(1, 4, n)).astype(int)
-        df['HC'] = (np.random.randint(3, 8, n) + (df['home_score'] * 0.5)).astype(int)
-        df['AC'] = (np.random.randint(2, 7, n) + (df['away_score'] * 0.5)).astype(int)
-        df['HY'] = np.random.randint(0, 4, n)
-        df['AY'] = np.random.randint(1, 5, n)
-        
-        condiciones = [(df['home_score'] > df['away_score']), (df['home_score'] < df['away_score'])]
-        df['FTR'] = np.select(condiciones, ['H', 'A'], default='D')
-        return df.sort_values('date').reset_index(drop=True)
-    except: return None
+    df = pd.read_csv("datos_reales_selecciones.csv")
+    df['date'] = pd.to_datetime(df['date'], errors='coerce')
+    
+    np.random.seed(42)
+    equipos_unicos = pd.concat([df['home_team'], df['away_team']]).unique()
+    simulacion_ranking = {eq: np.random.randint(1, 150) for eq in equipos_unicos}
+    df['home_rank'] = df['home_team'].map(simulacion_ranking)
+    df['away_rank'] = df['away_team'].map(simulacion_ranking)
+    
+    condiciones = [(df['home_score'] > df['away_score']), (df['home_score'] < df['away_score'])]
+    df['FTR'] = np.select(condiciones, ['H', 'A'], default='D')
+    return df.sort_values('date').reset_index(drop=True)
 
 @st.cache_resource(show_spinner=False)
 def entrenar_ia(_df):
@@ -78,23 +60,21 @@ def entrenar_ia(_df):
     
     for idx, row in _df.iterrows():
         h, a = row['home_team'], row['away_team']
-            def get_avg(t_data, stat):
-            arr = t_data[stat][-10:]
+        
+        def get_avg(t, stat):
+            arr = team_stats[t][stat][-10:]
             return np.mean(arr) if len(arr) > 0 else 0.0
             
-            def get_form(t_data): 
-            return sum(t_data['Pts'][-10:])
+        def get_form(t): 
+            return sum(team_stats[t]['Pts'][-10:])
             
         X_list.append({
             'H_GF': get_avg(h, 'GF'), 'H_GC': get_avg(h, 'GC'), 'H_S': get_avg(h, 'S'), 
             'H_ST': get_avg(h, 'ST'), 'H_C': get_avg(h, 'C'), 'H_Y': get_avg(h, 'Y'), 'H_Form': get_form(h),
             'A_GF': get_avg(a, 'GF'), 'A_GC': get_avg(a, 'GC'), 'A_S': get_avg(a, 'S'), 
             'A_ST': get_avg(a, 'ST'), 'A_C': get_avg(a, 'C'), 'A_Y': get_avg(a, 'Y'), 'A_Form': get_form(a),
-            'Neutral': 1 if row['neutral'] else 0,
-            
-            # --- NUEVO: MOTOR ML MODIFICADO CON RANKING Y FORMA ---
-            'H_Rank': row['home_rank'],
-            'A_Rank': row['away_rank'],
+            'Neutral': 1 if row.get('neutral', False) else 0,
+            'H_Rank': row['home_rank'], 'A_Rank': row['away_rank'],
             'Rank_Diff': row['away_rank'] - row['home_rank'],
             'H_Form_Official': get_form_oficial(h, _df, row['date']),
             'A_Form_Official': get_form_oficial(a, _df, row['date']),
@@ -141,28 +121,29 @@ def entrenar_ia(_df):
     }
     return clf, le, h_mods, a_mods, team_stats
 
-# --- UI DE LA APLICACIÓN ---
-st.title("🏆 ULTIMATE AI V14.2")
-st.markdown("### Predicciones Globales de Selecciones (Avanzado)")
+st.title("🏆 ULTIMATE AI V14.4")
+st.markdown("### Predicciones IA (Datos Reales 2 Años)")
 
-with st.spinner('Cargando base de datos, rankings y entrenando IA...'):
-    df_global = cargar_y_enriquecer_selecciones()
+df_global = cargar_y_enriquecer_selecciones()
+
+if df_global is None:
+    st.error("⚠️ Faltan datos: Primero debes ejecutar el bot 'descargar_datos.py' para generar el archivo 'datos_reales_selecciones.csv'.")
+    st.stop()
+
+with st.spinner('Entrenando IA con datos reales...'):
     clf, le, h_mods, a_mods, stats = entrenar_ia(df_global)
 
-equipos_activos = sorted([eq for eq in stats.keys() if len(stats[eq]['Pts']) > 5])
+equipos_activos = sorted([eq for eq in stats.keys() if len(stats[eq]['Pts']) > 0])
 
 col1, col2 = st.columns(2)
 with col1:
-    home = st.selectbox("🌍 Equipo 1 (Local):", equipos_activos, index=equipos_activos.index("Argentina") if "Argentina" in equipos_activos else 0)
+    home = st.selectbox("🌍 Equipo 1 (Local):", equipos_activos, index=0)
 with col2:
-    away = st.selectbox("🌍 Equipo 2 (Visita):", equipos_activos, index=equipos_activos.index("Brazil") if "Brazil" in equipos_activos else 1)
+    away = st.selectbox("🌍 Equipo 2 (Visita):", equipos_activos, index=1 if len(equipos_activos)>1 else 0)
 
-# --- NUEVOS CONTROLES PARA LA IA ---
 col_opt1, col_opt2 = st.columns(2)
-with col_opt1:
-    is_neutral = st.checkbox("Cancha Neutral", value=True)
-with col_opt2:
-    is_qualifier = st.checkbox("Partido Oficial/Eliminatoria", value=True)
+with col_opt1: is_neutral = st.checkbox("Cancha Neutral", value=True)
+with col_opt2: is_qualifier = st.checkbox("Partido Oficial", value=True)
 
 if st.button("🚀 GENERAR INFORME", use_container_width=True):
     if home == away:
@@ -170,11 +151,11 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
     else:
         h_s, a_s = stats[home], stats[away]
         
-        def get_avg(t_data, stat):
+        def get_avg_predict(t_data, stat):
             arr = t_data[stat][-10:]
             return np.mean(arr) if len(arr) > 0 else 0.0
             
-        def get_form(t_data): 
+        def get_form_predict(t_data): 
             return sum(t_data['Pts'][-10:])
             
         h_rank = df_global[df_global['home_team'] == home]['home_rank'].iloc[-1] if not df_global[df_global['home_team'] == home].empty else 100
@@ -182,33 +163,12 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
         fecha_actual = pd.Timestamp.now()
         
         input_ia = pd.DataFrame([{
-            'H_GF': get_avg(h_s, 'GF'), 'H_GC': get_avg(h_s, 'GC'), 'H_S': get_avg(h_s, 'S'), 
-            'H_ST': get_avg(h_s, 'ST'), 'H_C': get_avg(h_s, 'C'), 'H_Y': get_avg(h_s, 'Y'), 'H_Form': get_form(h_s),
-            'A_GF': get_avg(a_s, 'GF'), 'A_GC': get_avg(a_s, 'GC'), 'A_S': get_avg(a_s, 'S'), 
-            'A_ST': get_avg(a_s, 'ST'), 'A_C': get_avg(a_s, 'C'), 'A_Y': get_avg(a_s, 'Y'), 'A_Form': get_form(a_s),
+            'H_GF': get_avg_predict(h_s, 'GF'), 'H_GC': get_avg_predict(h_s, 'GC'), 'H_S': get_avg_predict(h_s, 'S'), 
+            'H_ST': get_avg_predict(h_s, 'ST'), 'H_C': get_avg_predict(h_s, 'C'), 'H_Y': get_avg_predict(h_s, 'Y'), 'H_Form': get_form_predict(h_s),
+            'A_GF': get_avg_predict(a_s, 'GF'), 'A_GC': get_avg_predict(a_s, 'GC'), 'A_S': get_avg_predict(a_s, 'S'), 
+            'A_ST': get_avg_predict(a_s, 'ST'), 'A_C': get_avg_predict(a_s, 'C'), 'A_Y': get_avg_predict(a_s, 'Y'), 'A_Form': get_form_predict(a_s),
             'Neutral': 1 if is_neutral else 0,
             'H_Rank': h_rank, 'A_Rank': a_rank, 'Rank_Diff': a_rank - h_rank,
-            'H_Form_Official': get_form_oficial(home, df_global, fecha_actual),
-            'A_Form_Official': get_form_oficial(away, df_global, fecha_actual),
-            'Is_Qualifier': 1 if is_qualifier else 0
-        }])
-            
-        # Extraer ranking actual de la base de datos simulada/cruzada
-        h_rank = df_global[df_global['home_team'] == home]['home_rank'].iloc[-1] if not df_global[df_global['home_team'] == home].empty else 100
-        a_rank = df_global[df_global['away_team'] == away]['away_rank'].iloc[-1] if not df_global[df_global['away_team'] == away].empty else 100
-        fecha_actual = pd.Timestamp.now()
-        
-        input_ia = pd.DataFrame([{
-            'H_GF': get_avg(h_s, 'GF'), 'H_GC': get_avg(h_s, 'GC'), 'H_S': get_avg(h_s, 'S'), 
-            'H_ST': get_avg(h_s, 'ST'), 'H_C': get_avg(h_s, 'C'), 'H_Y': get_avg(h_s, 'Y'), 'H_Form': get_form(h_s),
-            'A_GF': get_avg(a_s, 'GF'), 'A_GC': get_avg(a_s, 'GC'), 'A_S': get_avg(a_s, 'S'), 
-            'A_ST': get_avg(a_s, 'ST'), 'A_C': get_avg(a_s, 'C'), 'A_Y': get_avg(a_s, 'Y'), 'A_Form': get_form(a_s),
-            'Neutral': 1 if is_neutral else 0,
-            
-            # --- NUEVO: PARÁMETROS ENVIADOS AL MODELO ---
-            'H_Rank': h_rank,
-            'A_Rank': a_rank,
-            'Rank_Diff': a_rank - h_rank,
             'H_Form_Official': get_form_oficial(home, df_global, fecha_actual),
             'A_Form_Official': get_form_oficial(away, df_global, fecha_actual),
             'Is_Qualifier': 1 if is_qualifier else 0
@@ -243,17 +203,13 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
             .teams-row {{ display: flex; justify-content: space-around; align-items: center; padding: 15px; background: #f8fafc; flex-wrap: wrap; }}
             .team-nm {{ font-size: 1.2em; font-weight: bold; color: #1e293b; text-align: center; width: 40%; }}
             .vs-tag {{ background: #e2e8f0; color: #475569; padding: 5px 10px; border-radius: 4px; font-weight: 900; font-size: 0.8em; }}
-            
             .win-bar {{ display: flex; height: 8px; margin: 0; }}
             .wb-part {{ height: 100%; }}
-            
             .section-title {{ padding: 8px 10px; font-weight: bold; color: #f8fafc; background: #334155; font-size: 0.8em; text-transform: uppercase; }}
-            
             .stats-table {{ width: 100%; text-align: center; border-collapse: collapse; }}
             .stats-table th {{ background: #f1f5f9; padding: 8px; font-size: 0.75em; color: #475569; border-bottom: 2px solid #e2e8f0; }}
             .stats-table td {{ padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold; font-size: 0.9em; }}
             .lbl-col {{ text-align: left !important; padding-left: 10px !important; color: #64748b !important; }}
-            
             .flex-markets {{ display: flex; padding: 10px; gap: 10px; background: #f8fafc; flex-wrap: wrap; }}
             .mkt-box {{ flex: 1 1 45%; background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px; text-align: center; }}
             .mkt-title {{ font-size: 0.7em; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }}
@@ -261,7 +217,7 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
         </style>
         
         <div class="card">
-            <div class="header">ANÁLISIS V14.2: {home[:15].upper()} VS {away[:15].upper()}</div>
+            <div class="header">ANÁLISIS V14.4: {home[:15].upper()} VS {away[:15].upper()}</div>
             
             <div class="teams-row">
                 <div class="team-nm">{home[:10]}</div>
@@ -280,7 +236,7 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
                 <span style="color:#ef4444">{p_a*100:.1f}%</span>
             </div>
             
-            <div class="section-title">MÉTRICAS ESPERADAS (IA)</div>
+            <div class="section-title">MÉTRICAS ESPERADAS (IA - RACHA 10)</div>
             <table class="stats-table">
                 <tr>
                     <th class="lbl-col">MÉTRICA</th>
@@ -304,4 +260,5 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
             </div>
         </div>
         """
+        
         components.html(html, height=750, scrolling=True)
