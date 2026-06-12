@@ -122,7 +122,7 @@ def entrenar_ia(_df):
     return clf, le, h_mods, a_mods, team_stats
 
 st.title("🏆 ULTIMATE AI")
-st.markdown("### Predicciones IA (Datos Reales 2 Años)")
+st.markdown("### Predicciones IA (By L.Niquén)")
 
 df_global = cargar_y_enriquecer_selecciones()
 
