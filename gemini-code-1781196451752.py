@@ -235,4 +235,53 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
             .lbl-col {{ text-align: left !important; padding-left: 10px !important; color: #64748b !important; }}
             
             .flex-markets {{ display: flex; padding: 10px; gap: 10px; background: #f8fafc; flex-wrap: wrap; }}
-            .mkt-box {{ flex: 1
+            .mkt-box {{ flex: 1 1 45%; background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px; text-align: center; }}
+            .mkt-title {{ font-size: 0.7em; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }}
+            .mkt-val {{ font-size: 1.1em; font-weight: 900; color: #0f172a; }}
+        </style>
+        
+        <div class="card">
+            <div class="header">ANÁLISIS V14.2: {home[:15].upper()} VS {away[:15].upper()}</div>
+            
+            <div class="teams-row">
+                <div class="team-nm">{home[:10]}</div>
+                <div class="vs-tag">VS</div>
+                <div class="team-nm">{away[:10]}</div>
+            </div>
+            
+            <div class="win-bar">
+                <div class="wb-part" style="width:{p_h*100}%; background:#3b82f6;"></div>
+                <div class="wb-part" style="width:{p_d*100}%; background:#94a3b8;"></div>
+                <div class="wb-part" style="width:{p_a*100}%; background:#ef4444;"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding: 5px 10px; font-size:0.75em; font-weight:bold; background:white;">
+                <span style="color:#3b82f6">{p_h*100:.1f}%</span>
+                <span style="color:#64748b">EMP: {p_d*100:.1f}%</span>
+                <span style="color:#ef4444">{p_a*100:.1f}%</span>
+            </div>
+            
+            <div class="section-title">MÉTRICAS ESPERADAS (IA)</div>
+            <table class="stats-table">
+                <tr>
+                    <th class="lbl-col">MÉTRICA</th>
+                    <th>{home[:3].upper()}</th>
+                    <th>{away[:3].upper()}</th>
+                    <th style="color:#166534">TOTAL</th>
+                </tr>
+                <tr><td class="lbl-col">⚽ xG</td><td>{xg_h:.2f}</td><td>{xg_a:.2f}</td><td style="color:#166534">{tot_g:.2f}</td></tr>
+                <tr><td class="lbl-col">🚩 Córners</td><td>{xc_h:.1f}</td><td>{xc_a:.1f}</td><td style="color:#166534">{tot_c:.1f}</td></tr>
+                <tr><td class="lbl-col">🎯 T. Arco</td><td style="color:#0284c7">{xst_h:.1f}</td><td style="color:#0284c7">{xst_a:.1f}</td><td style="color:#166534">{xst_h+xst_a:.1f}</td></tr>
+                <tr><td class="lbl-col">🔫 T. Totales</td><td>{xs_h:.1f}</td><td>{xs_a:.1f}</td><td style="color:#166534">{xs_h+xs_a:.1f}</td></tr>
+                <tr><td class="lbl-col">🟨 Tarjetas</td><td style="color:#d97706">{xy_h:.1f}</td><td style="color:#d97706">{xy_a:.1f}</td><td style="color:#166534">{tot_y:.1f}</td></tr>
+            </table>
+
+            <div class="section-title">MERCADOS ESTRATÉGICOS</div>
+            <div class="flex-markets">
+                <div class="mkt-box"><div class="mkt-title">Over 2.5</div><div class="mkt-val" style="color:{'#166534' if calc_poisson(tot_g, 2.5)>55 else '#991b1b'}">{calc_poisson(tot_g, 2.5):.1f}%</div></div>
+                <div class="mkt-box"><div class="mkt-title">BTTS</div><div class="mkt-val">{(1-poisson.pmf(0, xg_h))*(1-poisson.pmf(0, xg_a))*100:.1f}%</div></div>
+                <div class="mkt-box"><div class="mkt-title">Over 8.5 Córners</div><div class="mkt-val">{calc_poisson(tot_c, 8.5):.1f}%</div></div>
+                <div class="mkt-box"><div class="mkt-title">Top Marcador</div><div class="mkt-val" style="color:#0284c7;">{top_scores[0]['score']} ({top_scores[0]['prob']:.0f}%)</div></div>
+            </div>
+        </div>
+        """
+        components.html(html, height=750, scrolling=True)
