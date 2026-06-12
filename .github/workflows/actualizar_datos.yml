@@ -22,7 +22,7 @@ COMPETICIONES = {
     "Eliminatorias UEFA": 34
 }
 
-# <-- CORRECCIÓN: Calcula dinámicamente el año actual y el anterior -->
+# Calcula dinámicamente el año actual y el anterior
 año_actual = datetime.now().year
 TEMPORADAS = [str(año_actual - 1), str(año_actual)] 
 LIMITE_DIARIO = 90
