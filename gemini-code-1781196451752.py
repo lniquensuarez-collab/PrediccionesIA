@@ -78,11 +78,11 @@ def entrenar_ia(_df):
     
     for idx, row in _df.iterrows():
         h, a = row['home_team'], row['away_team']
-    def get_avg(t_data, stat):
+            def get_avg(t_data, stat):
             arr = t_data[stat][-10:]
             return np.mean(arr) if len(arr) > 0 else 0.0
             
-        def get_form(t_data): 
+            def get_form(t_data): 
             return sum(t_data['Pts'][-10:])
             
         X_list.append({
