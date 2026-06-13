@@ -1,5 +1,5 @@
 # ==============================================================================
-# 📱 ULTIMATE AI V15.2 - MONTECARLO & TIME DECAY (ÚLTIMOS 12 PARTIDOS)
+# 📱 ULTIMATE AI V15.3 - MONTECARLO & TIME DECAY (UI PREMIUM GERENCIAL)
 # ==============================================================================
 
 import streamlit as st
@@ -62,11 +62,9 @@ def entrenar_ia(_df):
     for idx, row in _df.iterrows():
         h, a = row['home_team'], row['away_team']
         
-        # --- IMPLEMENTACIÓN DE TIME DECAY (12 PARTIDOS) ---
         def get_avg(t, stat):
-            arr = team_stats[t][stat][-12:] # Usamos 12 partidos
+            arr = team_stats[t][stat][-12:]
             if len(arr) == 0: return 0.0
-            # Pesos exponenciales: los más recientes pesan más (hasta 1.5x)
             pesos = np.linspace(0.5, 1.5, len(arr))
             return np.average(arr, weights=pesos)
             
@@ -74,8 +72,7 @@ def entrenar_ia(_df):
             arr = team_stats[t]['Pts'][-12:]
             if len(arr) == 0: return 0.0
             pesos = np.linspace(0.5, 1.5, len(arr))
-            return np.sum(arr * pesos) # Puntos ponderados por tiempo
-        # --------------------------------------------------
+            return np.sum(arr * pesos)
             
         X_list.append({
             'H_GF': get_avg(h, 'GF'), 'H_GC': get_avg(h, 'GC'), 'H_S': get_avg(h, 'S'), 
@@ -130,8 +127,8 @@ def entrenar_ia(_df):
     }
     return clf, le, h_mods, a_mods, team_stats
 
-st.title("🏆 ULTIMATE AI V15.2")
-st.markdown("### Predicciones IA (Montecarlo & Time Decay)")
+st.title("🏆 ULTIMATE AI V15.3")
+st.markdown("### Predicciones IA (Montecarlo & UI Premium)")
 
 df_global = cargar_y_enriquecer_selecciones()
 
@@ -139,7 +136,7 @@ if df_global is None:
     st.error("⚠️ Faltan datos: Primero debes ejecutar el bot 'descargar_datos.py'.")
     st.stop()
 
-with st.spinner('Entrenando IA con pesos temporales...'):
+with st.spinner('Procesando Algoritmos Analíticos...'):
     clf, le, h_mods, a_mods, stats = entrenar_ia(df_global)
 
 equipos_activos = sorted([eq for eq in stats.keys() if len(stats[eq]['Pts']) > 0])
@@ -152,11 +149,10 @@ col_opt1, col_opt2 = st.columns(2)
 with col_opt1: is_neutral = st.checkbox("Cancha Neutral", value=True)
 with col_opt2: is_qualifier = st.checkbox("Partido Oficial", value=True)
 
-if st.button("🚀 GENERAR INFORME", use_container_width=True):
+if st.button("🚀 GENERAR INFORME DIRECTIVO", use_container_width=True):
     if home == away:
         st.error("⚠️ Error: Selecciona equipos distintos.")
     else:
-        # --- TIME DECAY EN LA PREDICCIÓN ACTUAL ---
         def get_avg_predict(t_data, stat):
             arr = t_data[stat][-12:]
             if len(arr) == 0: return 0.0
@@ -168,7 +164,6 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
             if len(arr) == 0: return 0.0
             pesos = np.linspace(0.5, 1.5, len(arr))
             return np.sum(arr * pesos)
-        # ------------------------------------------
             
         fecha_actual = pd.Timestamp.now()
         
@@ -231,11 +226,8 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
         
         tot_g = xg_h + xg_a; tot_c = xc_h + xc_a; tot_y = xy_h + xy_a
         
-        # ====================================================================
-        # 🎲 SIMULACIÓN DE MONTECARLO (100,000 PARTIDOS)
-        # ====================================================================
+        # Simulación de Montecarlo
         iteraciones = 100000
-        # Simulamos 100mil goles para cada equipo basados en su xG ponderado
         sim_h = np.random.poisson(xg_h, iteraciones)
         sim_a = np.random.poisson(xg_a, iteraciones)
         
@@ -243,55 +235,65 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
         for i in range(iteraciones):
             h_goles = sim_h[i]
             a_goles = sim_a[i]
-            
-            # Sincronizamos la simulación con el Machine Learning 
-            # (Descartamos la simulación si no coincide con las probabilidades del modelo principal)
-            peso_ml = 0
-            if h_goles > a_goles: peso_ml = p_h
-            elif h_goles < a_goles: peso_ml = p_a
-            else: peso_ml = p_d
-            
-            # Guardamos el resultado ajustado por el peso
+            peso_ml = p_h if h_goles > a_goles else (p_a if h_goles < a_goles else p_d)
             resultados_simulados.append({'score': f"{h_goles} - {a_goles}", 'peso': peso_ml})
             
-        # Agrupamos y calculamos probabilidades finales
         df_sim = pd.DataFrame(resultados_simulados)
         df_agrupado = df_sim.groupby('score')['peso'].sum().reset_index()
         total_peso = df_agrupado['peso'].sum()
         df_agrupado['prob'] = (df_agrupado['peso'] / total_peso) * 100
-        
         top_scores = df_agrupado.sort_values(by='prob', ascending=False).head(5).to_dict('records')
         
-        # Generar filas HTML para la nueva tabla
-        filas_tabla_marcadores = ""
-        for s in top_scores:
-            filas_tabla_marcadores += f"<tr><td style='font-size:1.1em;'>{s['score']}</td><td style='color:#0ea5e9; font-size:1.1em;'>{s['prob']:.1f}%</td></tr>"
-        # ====================================================================
-
+        # --- CÁLCULO DE PROBABILIDADES ESTADÍSTICAS ---
         def calc_poisson(expected, threshold): return poisson.sf(threshold, expected) * 100
         
+        prob_over25 = calc_poisson(tot_g, 2.5)
+        prob_btts = (1 - poisson.pmf(0, xg_h)) * (1 - poisson.pmf(0, xg_a)) * 100
+        
+        # --- LÓGICA DEL SEMÁFORO DE RIESGO ---
+        def get_color_riesgo(probabilidad):
+            if probabilidad >= 60: return "#166534" # Verde (Bajo Riesgo / Oportunidad)
+            elif probabilidad >= 45: return "#d97706" # Naranja (Riesgo Medio)
+            else: return "#991b1b" # Rojo (Alto Riesgo)
+
+        # --- BARRAS DE CALOR PARA MONTECARLO ---
+        filas_tabla_marcadores = ""
+        max_prob = top_scores[0]['prob'] if top_scores else 100
+        for s in top_scores:
+            ancho_barra = (s['prob'] / max_prob) * 100 if max_prob > 0 else 0
+            barra_html = f"""
+            <div style='background: #e2e8f0; border-radius: 4px; position: relative; width: 100%; height: 24px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);'>
+                <div style='background: linear-gradient(90deg, #38bdf8 0%, #0284c7 100%); width: {ancho_barra}%; height: 100%; position: absolute; top: 0; left: 0; border-radius: 4px;'></div>
+                <span style='position: relative; z-index: 1; padding-left: 10px; font-weight: 800; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.6); line-height: 24px; font-size: 0.9em;'>{s['prob']:.1f}%</span>
+            </div>
+            """
+            filas_tabla_marcadores += f"<tr class='hover-row'><td style='font-size:1.1em; font-weight: 900; color:#1e293b;'>{s['score']}</td><td style='padding: 8px 10px;'>{barra_html}</td></tr>"
+
         html = f"""
         <style>
-            .card {{ font-family: 'Segoe UI', sans-serif; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #ccc; overflow:hidden; width: 100%; margin-bottom: 20px; }}
-            .header {{ background: #0f172a; color: #fff; padding: 15px; text-align: center; font-weight: bold; font-size: 1em; border-bottom: 4px solid #10b981; }}
-            .teams-row {{ display: flex; justify-content: space-around; align-items: center; padding: 15px; background: #f8fafc; flex-wrap: wrap; }}
-            .team-nm {{ font-size: 1.2em; font-weight: bold; color: #1e293b; text-align: center; width: 40%; }}
-            .vs-tag {{ background: #e2e8f0; color: #475569; padding: 5px 10px; border-radius: 4px; font-weight: 900; font-size: 0.8em; }}
-            .win-bar {{ display: flex; height: 8px; margin: 0; }}
-            .wb-part {{ height: 100%; }}
-            .section-title {{ padding: 8px 10px; font-weight: bold; color: #f8fafc; background: #334155; font-size: 0.8em; text-transform: uppercase; }}
+            .card {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #fff; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; overflow:hidden; width: 100%; margin-bottom: 20px; }}
+            .header {{ background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #fff; padding: 16px; text-align: center; font-weight: 800; font-size: 1.1em; border-bottom: 4px solid #10b981; letter-spacing: 1px; }}
+            .teams-row {{ display: flex; justify-content: space-around; align-items: center; padding: 20px; background: #f8fafc; flex-wrap: wrap; border-bottom: 1px solid #e2e8f0; }}
+            .team-nm {{ font-size: 1.3em; font-weight: 900; color: #0f172a; text-align: center; width: 40%; text-transform: uppercase; }}
+            .vs-tag {{ background: #cbd5e1; color: #334155; padding: 6px 12px; border-radius: 8px; font-weight: 900; font-size: 0.85em; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); }}
+            .win-bar {{ display: flex; height: 10px; margin: 0; }}
+            .wb-part {{ height: 100%; transition: width 0.5s ease; }}
+            .section-title {{ padding: 10px 15px; font-weight: 800; color: #f8fafc; background: #334155; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.5px; }}
             .stats-table {{ width: 100%; text-align: center; border-collapse: collapse; }}
-            .stats-table th {{ background: #f1f5f9; padding: 8px; font-size: 0.75em; color: #475569; border-bottom: 2px solid #e2e8f0; }}
-            .stats-table td {{ padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold; font-size: 0.9em; }}
-            .lbl-col {{ text-align: left !important; padding-left: 10px !important; color: #64748b !important; }}
-            .flex-markets {{ display: flex; padding: 10px; gap: 10px; background: #f8fafc; flex-wrap: wrap; }}
-            .mkt-box {{ flex: 1 1 45%; background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px; text-align: center; }}
-            .mkt-title {{ font-size: 0.7em; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }}
-            .mkt-val {{ font-size: 1.1em; font-weight: 900; color: #0f172a; }}
+            .stats-table th {{ background: #f1f5f9; padding: 10px; font-size: 0.8em; color: #475569; border-bottom: 2px solid #cbd5e1; text-transform: uppercase; }}
+            .stats-table td {{ padding: 12px 10px; border-bottom: 1px solid #e2e8f0; font-weight: 700; font-size: 0.95em; color: #334155; }}
+            .stats-table tr.zebra:nth-child(even) {{ background-color: #f8fafc; }}
+            .stats-table tr.hover-row:hover {{ background-color: #f1f5f9; transition: background 0.2s; }}
+            .lbl-col {{ text-align: left !important; padding-left: 15px !important; color: #64748b !important; border-right: 1px solid #e2e8f0; cursor: help; }}
+            .flex-markets {{ display: flex; padding: 15px; gap: 15px; background: #f8fafc; flex-wrap: wrap; }}
+            .mkt-box {{ flex: 1 1 45%; background: white; border: 1px solid #cbd5e1; border-radius: 8px; padding: 15px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); transition: transform 0.2s, box-shadow 0.2s; }}
+            .mkt-box:hover {{ transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }}
+            .mkt-title {{ font-size: 0.75em; color: #64748b; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }}
+            .mkt-val {{ font-size: 1.4em; font-weight: 900; }}
         </style>
         
         <div class="card">
-            <div class="header">ANÁLISIS V15.2: {home[:15].upper()} VS {away[:15].upper()}</div>
+            <div class="header">REPORTE DIRECTIVO V15.3: {home[:15].upper()} VS {away[:15].upper()}</div>
             
             <div class="teams-row">
                 <div class="team-nm">{home[:10]}</div>
@@ -300,11 +302,11 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
             </div>
             
             <div class="win-bar">
-                <div class="wb-part" style="width:{p_h*100}%; background:#3b82f6;"></div>
-                <div class="wb-part" style="width:{p_d*100}%; background:#94a3b8;"></div>
-                <div class="wb-part" style="width:{p_a*100}%; background:#ef4444;"></div>
+                <div class="wb-part" style="width:{p_h*100}%; background:#3b82f6;" title="Probabilidad Local"></div>
+                <div class="wb-part" style="width:{p_d*100}%; background:#94a3b8;" title="Probabilidad Empate"></div>
+                <div class="wb-part" style="width:{p_a*100}%; background:#ef4444;" title="Probabilidad Visita"></div>
             </div>
-            <div style="display:flex; justify-content:space-between; padding: 5px 10px; font-size:0.75em; font-weight:bold; background:white;">
+            <div style="display:flex; justify-content:space-between; padding: 8px 15px; font-size:0.8em; font-weight:800; background:white; border-bottom: 1px solid #e2e8f0;">
                 <span style="color:#3b82f6">{p_h*100:.1f}%</span>
                 <span style="color:#64748b">EMP: {p_d*100:.1f}%</span>
                 <span style="color:#ef4444">{p_a*100:.1f}%</span>
@@ -316,30 +318,36 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
                     <th class="lbl-col">MÉTRICA</th>
                     <th>{home[:3].upper()}</th>
                     <th>{away[:3].upper()}</th>
-                    <th style="color:#166534">TOTAL</th>
+                    <th style="color:#0f172a">TOTAL</th>
                 </tr>
-                <tr><td class="lbl-col">⚽ xG</td><td>{xg_h:.2f}</td><td>{xg_a:.2f}</td><td style="color:#166534">{tot_g:.2f}</td></tr>
-                <tr><td class="lbl-col">🚩 Córners</td><td>{xc_h:.1f}</td><td>{xc_a:.1f}</td><td style="color:#166534">{tot_c:.1f}</td></tr>
-                <tr><td class="lbl-col">🎯 T. Arco</td><td style="color:#0284c7">{xst_h:.1f}</td><td style="color:#0284c7">{xst_a:.1f}</td><td style="color:#166534">{xst_h+xst_a:.1f}</td></tr>
-                <tr><td class="lbl-col">🔫 T. Totales</td><td>{xs_h:.1f}</td><td>{xs_a:.1f}</td><td style="color:#166534">{xs_h+xs_a:.1f}</td></tr>
-                <tr><td class="lbl-col">🟨 Tarjetas</td><td style="color:#d97706">{xy_h:.1f}</td><td style="color:#d97706">{xy_a:.1f}</td><td style="color:#166534">{tot_y:.1f}</td></tr>
+                <tr class="zebra hover-row"><td class="lbl-col" title="Goles Esperados (xG): Calidad matemática de las ocasiones de gol generadas.">⚽ xG</td><td>{xg_h:.2f}</td><td>{xg_a:.2f}</td><td style="color:#0f172a">{tot_g:.2f}</td></tr>
+                <tr class="zebra hover-row"><td class="lbl-col" title="Tiros de esquina proyectados según el volumen ofensivo.">🚩 Córners</td><td>{xc_h:.1f}</td><td>{xc_a:.1f}</td><td style="color:#0f172a">{tot_c:.1f}</td></tr>
+                <tr class="zebra hover-row"><td class="lbl-col" title="Tiros al Arco: Disparos que van directamente entre los tres palos.">🎯 T. Arco</td><td style="color:#0284c7">{xst_h:.1f}</td><td style="color:#0284c7">{xst_a:.1f}</td><td style="color:#0f172a">{xst_h+xst_a:.1f}</td></tr>
+                <tr class="zebra hover-row"><td class="lbl-col" title="Tiros Totales: Suma de todos los remates (desviados, bloqueados y a puerta).">🔫 T. Totales</td><td>{xs_h:.1f}</td><td>{xs_a:.1f}</td><td style="color:#0f172a">{xs_h+xs_a:.1f}</td></tr>
+                <tr class="zebra hover-row"><td class="lbl-col" title="Proyección de tarjetas (Fricción del partido).">🟨 Tarjetas</td><td style="color:#d97706">{xy_h:.1f}</td><td style="color:#d97706">{xy_a:.1f}</td><td style="color:#0f172a">{tot_y:.1f}</td></tr>
             </table>
 
-            <div class="section-title">MERCADOS ESTRATÉGICOS</div>
+            <div class="section-title">SEMÁFORO DE RIESGO ESTRATÉGICO</div>
             <div class="flex-markets">
-                <div class="mkt-box"><div class="mkt-title">Over 2.5</div><div class="mkt-val" style="color:{'#166534' if calc_poisson(tot_g, 2.5)>55 else '#991b1b'}">{calc_poisson(tot_g, 2.5):.1f}%</div></div>
-                <div class="mkt-box"><div class="mkt-title">BTTS</div><div class="mkt-val">{(1-poisson.pmf(0, xg_h))*(1-poisson.pmf(0, xg_a))*100:.1f}%</div></div>
+                <div class="mkt-box">
+                    <div class="mkt-title" title="Probabilidad de que el partido termine con 3 goles o más.">Over 2.5 Goles</div>
+                    <div class="mkt-val" style="color: {color_o25};">{prob_over25:.1f}%</div>
+                </div>
+                <div class="mkt-box">
+                    <div class="mkt-title" title="Ambos Equipos Anotan (Sí).">BTTS - Sí</div>
+                    <div class="mkt-val" style="color: {color_btts};">{prob_btts:.1f}%</div>
+                </div>
             </div>
             
-            <div class="section-title" style="background: #0f172a;">🎲 MARCADORES EXACTOS (100,000 SIMULACIONES)</div>
+            <div class="section-title" style="background: linear-gradient(90deg, #0f172a 0%, #334155 100%);">🎲 TOP 5 MARCADORES (100,000 SIMULACIONES)</div>
             <table class="stats-table">
                 <tr>
-                    <th>MARCADOR FINAL</th>
-                    <th>PROBABILIDAD</th>
+                    <th style="width: 30%;">MARCADOR</th>
+                    <th style="text-align: left; padding-left: 10px;">PROBABILIDAD & DISTRIBUCIÓN</th>
                 </tr>
                 {filas_tabla_marcadores}
             </table>
         </div>
         """
         
-        components.html(html, height=850, scrolling=True)
+        components.html(html, height=950, scrolling=True)
