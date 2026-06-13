@@ -1,5 +1,5 @@
 # ==============================================================================
-# 📱 ULTIMATE AI V15.1 - DATOS REALES (SIMETRÍA ABSOLUTA CORREGIDA)
+# 📱 ULTIMATE AI V15.2 - MONTECARLO & TIME DECAY (ÚLTIMOS 12 PARTIDOS)
 # ==============================================================================
 
 import streamlit as st
@@ -9,6 +9,7 @@ import numpy as np
 from scipy.stats import poisson
 from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
 from sklearn.preprocessing import LabelEncoder
+from collections import Counter
 import warnings
 import os
 
@@ -61,12 +62,20 @@ def entrenar_ia(_df):
     for idx, row in _df.iterrows():
         h, a = row['home_team'], row['away_team']
         
+        # --- IMPLEMENTACIÓN DE TIME DECAY (12 PARTIDOS) ---
         def get_avg(t, stat):
-            arr = team_stats[t][stat][-10:]
-            return np.mean(arr) if len(arr) > 0 else 0.0
+            arr = team_stats[t][stat][-12:] # Usamos 12 partidos
+            if len(arr) == 0: return 0.0
+            # Pesos exponenciales: los más recientes pesan más (hasta 1.5x)
+            pesos = np.linspace(0.5, 1.5, len(arr))
+            return np.average(arr, weights=pesos)
             
         def get_form(t): 
-            return sum(team_stats[t]['Pts'][-10:])
+            arr = team_stats[t]['Pts'][-12:]
+            if len(arr) == 0: return 0.0
+            pesos = np.linspace(0.5, 1.5, len(arr))
+            return np.sum(arr * pesos) # Puntos ponderados por tiempo
+        # --------------------------------------------------
             
         X_list.append({
             'H_GF': get_avg(h, 'GF'), 'H_GC': get_avg(h, 'GC'), 'H_S': get_avg(h, 'S'), 
@@ -121,94 +130,50 @@ def entrenar_ia(_df):
     }
     return clf, le, h_mods, a_mods, team_stats
 
-st.title("🏆 ULTIMATE AI V15.1")
-st.markdown("### Predicciones IA (By L.Niquén)")
+st.title("🏆 ULTIMATE AI V15.2")
+st.markdown("### Predicciones IA (Montecarlo & Time Decay)")
 
 df_global = cargar_y_enriquecer_selecciones()
 
 if df_global is None:
-    st.error("⚠️ Faltan datos: Primero debes ejecutar el bot 'descargar_datos.py' para generar el archivo 'datos_reales_selecciones.csv'.")
+    st.error("⚠️ Faltan datos: Primero debes ejecutar el bot 'descargar_datos.py'.")
     st.stop()
 
-with st.spinner('Entrenando IA con datos reales...'):
+with st.spinner('Entrenando IA con pesos temporales...'):
     clf, le, h_mods, a_mods, stats = entrenar_ia(df_global)
 
 equipos_activos = sorted([eq for eq in stats.keys() if len(stats[eq]['Pts']) > 0])
 
 col1, col2 = st.columns(2)
-with col1:
-    home = st.selectbox("🌍 Equipo 1 (Local / Izquierda):", equipos_activos, index=0)
-with col2:
-    away = st.selectbox("🌍 Equipo 2 (Visita / Derecha):", equipos_activos, index=1 if len(equipos_activos)>1 else 0)
+with col1: home = st.selectbox("🌍 Equipo 1 (Local):", equipos_activos, index=0)
+with col2: away = st.selectbox("🌍 Equipo 2 (Visita):", equipos_activos, index=1 if len(equipos_activos)>1 else 0)
 
 col_opt1, col_opt2 = st.columns(2)
 with col_opt1: is_neutral = st.checkbox("Cancha Neutral", value=True)
 with col_opt2: is_qualifier = st.checkbox("Partido Oficial", value=True)
 
-st.markdown("---")
-contexto_partido = st.radio(
-    "🛡️ Contexto del Partido (Nivel de Riesgo):",
-    [
-        "Fase de Grupos / Amistoso (Juego más abierto y ofensivo)", 
-        "Eliminación Directa / Final (Matar o morir, alta cautela táctica)"
-    ]
-)
-
-instrucciones_mercado = ""
-
-if "Eliminación" in contexto_partido:
-    instrucciones_mercado = """
-    🛡️ MERCADOS PARA TORNEOS DE ELIMINACIÓN (ALTA CAUTELA):
-    Al analizar este partido, tu deber es enfocar la estrategia en la prevención de riesgos y justificar tu predicción basándote en estos mercados:
-    * Menos de 2.5 Goles (Under 2.5): Es el rey de las fases finales. Las defensas se cierran, las líneas se juntan y nadie regala un centímetro. Si detectas que ambos equipos tienen defensas sólidas, el Under es una decisión estadísticamente muy inteligente.
-    * Empate en el Primer Tiempo (X - Mitad 1): En partidos donde la eliminación está en juego, los primeros 45 minutos suelen ser de puro estudio, contención y respeto mutuo. Nadie quiere arriesgar su capital táctico temprano.
-    * Más de X Tarjetas (Over Tarjetas): Cuando el miedo a recibir un gol es tan grande, los equipos prefieren cortar cualquier contragolpe peligroso con "faltas tácticas". Ese juego friccionado y preventivo dispara la cantidad de tarjetas amarillas.
-    * Clasifica (To Qualify): En lugar de apostar a quién gana en los 90 minutos (donde un empate 0-0 te hace perder la apuesta), el mercado de "Clasifica" te cubre. No importa si la selección gana en el tiempo regular, en la prórroga o por penales; si pasan de ronda, se cobra.
-    """
-else:
-    instrucciones_mercado = """
-    ⚽ MERCADOS PARA FASE DE GRUPOS / LIGA / AMISTOSOS:
-    Evalúa el terreno basándote estrictamente en estos mercados estadísticamente fiables:
-    1. Más / Menos Goles (Over / Under 1.5 o 2.5): Este es el mercado rey. Predecir quién ganará puede arruinarse por una tarjeta roja o un penal, pero el flujo del partido es muy predecible. Calcula con altísima precisión si el partido terminará con 2 o más goles cruzando los promedios ofensivos vs debilidades defensivas (xG, tiros). Ideal para clara diferencia de niveles o defensas frágiles.
-    2. Apuesta Sin Empate (Draw No Bet / Empate No Acción): Los empates son increíblemente comunes. Identificar el riesgo requiere medidas de prevención, similar a estructurar una matriz de riesgos. Si el peligro de un empate es alto, este mercado actúa como protección. Ideal para partidos de visitante donde un equipo es superior, pero factores externos equilibran la balanza.
-    3. Ambos Equipos Anotan (BTTS - Sí / No): Elimina la necesidad de adivinar quién se llevará los 3 puntos. Solo pregúntate: ¿Ambos tienen capacidad de hacerse daño? Busca patrones de ida y vuelta constante. Ideal para equipos con gran poderío en la delantera pero estadísticas pobres para mantener su portería a cero.
-    """
-
-restricciones_mercado = """
-🚫 MERCADOS QUE DEBES EVITAR (Alta varianza):
-* Marcador Exacto: Es una lotería. Matemáticamente es casi imposible de predecir de forma consistente.
-* Primer equipo en anotar: Depende demasiado de factores aleatorios iniciales.
-Nunca recomiendes estos dos mercados en tu análisis final.
-"""
-
-prompt_ia = f"""
-Eres un analista deportivo experto en estadística avanzada.
-Analiza el enfrentamiento entre {home} (Local) y {away} (Visitante).
-
-{instrucciones_mercado}
-
-{restricciones_mercado}
-
-Basado en los datos y estadísticas proporcionadas, dame las probabilidades y tu mejor recomendación estructurada para este partido.
-"""
-
 if st.button("🚀 GENERAR INFORME", use_container_width=True):
     if home == away:
         st.error("⚠️ Error: Selecciona equipos distintos.")
     else:
+        # --- TIME DECAY EN LA PREDICCIÓN ACTUAL ---
         def get_avg_predict(t_data, stat):
-            arr = t_data[stat][-10:]
-            return np.mean(arr) if len(arr) > 0 else 0.0
+            arr = t_data[stat][-12:]
+            if len(arr) == 0: return 0.0
+            pesos = np.linspace(0.5, 1.5, len(arr))
+            return np.average(arr, weights=pesos)
             
         def get_form_predict(t_data): 
-            return sum(t_data['Pts'][-10:])
+            arr = t_data['Pts'][-12:]
+            if len(arr) == 0: return 0.0
+            pesos = np.linspace(0.5, 1.5, len(arr))
+            return np.sum(arr * pesos)
+        # ------------------------------------------
             
         fecha_actual = pd.Timestamp.now()
         
-        # --- FUNCIÓN MAESTRA PARA CONSTRUIR INPUTS SIN ERRORES ---
         def generar_input_ia(t_local, t_visita):
             h_data, a_data = stats[t_local], stats[t_visita]
-            
             hr = df_global[df_global['home_team'] == t_local]['home_rank'].iloc[-1] if not df_global[df_global['home_team'] == t_local].empty else 100
             ar = df_global[df_global['away_team'] == t_visita]['away_rank'].iloc[-1] if not df_global[df_global['away_team'] == t_visita].empty else 100
             
@@ -224,13 +189,11 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
                 'Is_Qualifier': 1 if is_qualifier else 0
             }])
 
-        # 1. EVALUACIÓN NORMAL (Como dicta la pantalla)
         input_n = generar_input_ia(home, away)
         probs_n = clf.predict_proba(input_n)[0]
         cls = le.inverse_transform(clf.classes_)
         pmap_n = {c: p for c, p in zip(cls, probs_n)}
         
-        # 2. LÓGICA DE ESPEJO (TEST-TIME AUGMENTATION PURA)
         if is_neutral:
             input_i = generar_input_ia(away, home)
             probs_i = clf.predict_proba(input_i)[0]
@@ -240,7 +203,6 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
             p_a = (pmap_n.get('A', 0) + pmap_i.get('H', 0)) / 2
             p_d = (pmap_n.get('D', 0) + pmap_i.get('D', 0)) / 2
             
-            # Normalización estricta al 100%
             tot_p = p_h + p_a + p_d
             p_h, p_a, p_d = p_h/tot_p, p_a/tot_p, p_d/tot_p
             
@@ -269,33 +231,48 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
         
         tot_g = xg_h + xg_a; tot_c = xc_h + xc_a; tot_y = xy_h + xy_a
         
-        # --- CÁLCULO DE MARCADOR PONDERADO SINCRONIZADO ---
-        matriz_scores = []
-        suma_probabilidades = 0
-        for i in range(6): 
-            for j in range(6): 
-                prob_poisson = poisson.pmf(i, xg_h) * poisson.pmf(j, xg_a)
-                if i > j:
-                    peso_ml = p_h
-                elif i < j:
-                    peso_ml = p_a
-                else:
-                    peso_ml = p_d
-                
-                prob_combinada = prob_poisson * peso_ml
-                suma_probabilidades += prob_combinada
-                matriz_scores.append({'score': f"{i} - {j}", 'prob_combinada': prob_combinada})
-                
-        for score in matriz_scores:
-            score['prob'] = (score['prob_combinada'] / suma_probabilidades) * 100 if suma_probabilidades > 0 else 0
+        # ====================================================================
+        # 🎲 SIMULACIÓN DE MONTECARLO (100,000 PARTIDOS)
+        # ====================================================================
+        iteraciones = 100000
+        # Simulamos 100mil goles para cada equipo basados en su xG ponderado
+        sim_h = np.random.poisson(xg_h, iteraciones)
+        sim_a = np.random.poisson(xg_a, iteraciones)
+        
+        resultados_simulados = []
+        for i in range(iteraciones):
+            h_goles = sim_h[i]
+            a_goles = sim_a[i]
             
-        top_scores = sorted(matriz_scores, key=lambda x: x['prob'], reverse=True)[:3]
+            # Sincronizamos la simulación con el Machine Learning 
+            # (Descartamos la simulación si no coincide con las probabilidades del modelo principal)
+            peso_ml = 0
+            if h_goles > a_goles: peso_ml = p_h
+            elif h_goles < a_goles: peso_ml = p_a
+            else: peso_ml = p_d
+            
+            # Guardamos el resultado ajustado por el peso
+            resultados_simulados.append({'score': f"{h_goles} - {a_goles}", 'peso': peso_ml})
+            
+        # Agrupamos y calculamos probabilidades finales
+        df_sim = pd.DataFrame(resultados_simulados)
+        df_agrupado = df_sim.groupby('score')['peso'].sum().reset_index()
+        total_peso = df_agrupado['peso'].sum()
+        df_agrupado['prob'] = (df_agrupado['peso'] / total_peso) * 100
+        
+        top_scores = df_agrupado.sort_values(by='prob', ascending=False).head(5).to_dict('records')
+        
+        # Generar filas HTML para la nueva tabla
+        filas_tabla_marcadores = ""
+        for s in top_scores:
+            filas_tabla_marcadores += f"<tr><td style='font-size:1.1em;'>{s['score']}</td><td style='color:#0ea5e9; font-size:1.1em;'>{s['prob']:.1f}%</td></tr>"
+        # ====================================================================
 
         def calc_poisson(expected, threshold): return poisson.sf(threshold, expected) * 100
         
         html = f"""
         <style>
-            .card {{ font-family: 'Segoe UI', sans-serif; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #ccc; overflow:hidden; width: 100%; }}
+            .card {{ font-family: 'Segoe UI', sans-serif; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #ccc; overflow:hidden; width: 100%; margin-bottom: 20px; }}
             .header {{ background: #0f172a; color: #fff; padding: 15px; text-align: center; font-weight: bold; font-size: 1em; border-bottom: 4px solid #10b981; }}
             .teams-row {{ display: flex; justify-content: space-around; align-items: center; padding: 15px; background: #f8fafc; flex-wrap: wrap; }}
             .team-nm {{ font-size: 1.2em; font-weight: bold; color: #1e293b; text-align: center; width: 40%; }}
@@ -314,7 +291,7 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
         </style>
         
         <div class="card">
-            <div class="header">ANÁLISIS V15.1: {home[:15].upper()} VS {away[:15].upper()}</div>
+            <div class="header">ANÁLISIS V15.2: {home[:15].upper()} VS {away[:15].upper()}</div>
             
             <div class="teams-row">
                 <div class="team-nm">{home[:10]}</div>
@@ -333,7 +310,7 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
                 <span style="color:#ef4444">{p_a*100:.1f}%</span>
             </div>
             
-            <div class="section-title">MÉTRICAS ESPERADAS (IA - RACHA 10)</div>
+            <div class="section-title">MÉTRICAS ESPERADAS (TIME DECAY - ÚLT. 12)</div>
             <table class="stats-table">
                 <tr>
                     <th class="lbl-col">MÉTRICA</th>
@@ -352,10 +329,17 @@ if st.button("🚀 GENERAR INFORME", use_container_width=True):
             <div class="flex-markets">
                 <div class="mkt-box"><div class="mkt-title">Over 2.5</div><div class="mkt-val" style="color:{'#166534' if calc_poisson(tot_g, 2.5)>55 else '#991b1b'}">{calc_poisson(tot_g, 2.5):.1f}%</div></div>
                 <div class="mkt-box"><div class="mkt-title">BTTS</div><div class="mkt-val">{(1-poisson.pmf(0, xg_h))*(1-poisson.pmf(0, xg_a))*100:.1f}%</div></div>
-                <div class="mkt-box"><div class="mkt-title">Over 8.5 Córners</div><div class="mkt-val">{calc_poisson(tot_c, 8.5):.1f}%</div></div>
-                <div class="mkt-box"><div class="mkt-title">Top Marcador</div><div class="mkt-val" style="color:#0284c7;">{top_scores[0]['score']} ({top_scores[0]['prob']:.0f}%)</div></div>
             </div>
+            
+            <div class="section-title" style="background: #0f172a;">🎲 MARCADORES EXACTOS (100,000 SIMULACIONES)</div>
+            <table class="stats-table">
+                <tr>
+                    <th>MARCADOR FINAL</th>
+                    <th>PROBABILIDAD</th>
+                </tr>
+                {filas_tabla_marcadores}
+            </table>
         </div>
         """
         
-        components.html(html, height=750, scrolling=True)
+        components.html(html, height=850, scrolling=True)
