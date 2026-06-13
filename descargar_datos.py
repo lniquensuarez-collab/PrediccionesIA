@@ -54,10 +54,22 @@ def extraer_partidos():
             url_fixtures = "https://api-football-v1.p.rapidapi.com/v3/fixtures"
             querystring = {"league": str(liga_id), "season": temp}
             
-            # Petición para listar los partidos
+                        # Petición para listar los partidos
             res = requests.get(url_fixtures, headers=HEADERS, params=querystring)
             peticiones_hoy += 1
-            partidos = res.json().get('response', [])
+            
+            respuesta_json = res.json()
+            
+            # --- 🕵️‍♂️ RASTREADOR DE ERRORES INYECTADO ---
+            if 'message' in respuesta_json:
+                print(f"🛑 BLOQUEO DE RAPIDAPI: {respuesta_json['message']}")
+            
+            if 'errors' in respuesta_json and respuesta_json['errors']:
+                print(f"⚠️ ERROR DE PARÁMETROS ({nombre_comp} - {temp}): {respuesta_json['errors']}")
+            # -----------------------------------------------
+            
+            partidos = respuesta_json.get('response', [])
+
             time.sleep(1.5)
             
             for p in partidos:
