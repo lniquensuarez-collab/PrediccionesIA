@@ -256,6 +256,11 @@ if st.button("🚀 GENERAR INFORME DIRECTIVO", use_container_width=True):
             elif probabilidad >= 45: return "#d97706" # Naranja (Riesgo Medio)
             else: return "#991b1b" # Rojo (Alto Riesgo)
 
+        # 👇 AGREGA ESTAS DOS LÍNEAS QUE FALTABAN 👇
+        color_o25 = get_color_riesgo(prob_over25)
+        color_btts = get_color_riesgo(prob_btts)
+        # 👆 ------------------------------------ 👆
+
         # --- BARRAS DE CALOR PARA MONTECARLO ---
         filas_tabla_marcadores = ""
         max_prob = top_scores[0]['prob'] if top_scores else 100
