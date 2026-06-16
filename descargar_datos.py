@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 
 # ==============================================================================
-# 🤖 BOT EXTRACTOR INTELIGENTE V3 - CONEXIÓN DIRECTA (SIN RAPIDAPI)
+# 🤖 BOT EXTRACTOR V3.1 - CONEXIÓN DIRECTA (CONTROL DE VELOCIDAD DE 10/MIN)
 # ==============================================================================
 
 API_KEY = os.environ.get("RAPIDAPI_KEY") 
@@ -13,12 +13,13 @@ HEADERS = {
     "x-apisports-key": API_KEY
 }
 
+# IDs Corregidos a la base de datos oficial
 COMPETICIONES = {
     "World Cup": 1,
     "Euro": 4,
     "Copa America": 9,
-    "Eliminatorias CONMEBOL": 340,
-    "Eliminatorias UEFA": 34
+    "Eliminatorias CONMEBOL": 34, 
+    "Eliminatorias UEFA": 32
 }
 
 TEMPORADAS = ["2023", "2024", "2025", "2026"]
@@ -55,12 +56,15 @@ def extraer_partidos():
             
             respuesta_json = res.json()
             if 'errors' in respuesta_json and respuesta_json['errors']:
-                print(f"🛑 BLOQUEO DE API: {respuesta_json['errors']}")
-                limite_alcanzado = True
-                break
+                if isinstance(respuesta_json['errors'], dict) and 'rateLimit' in respuesta_json['errors']:
+                    print(f"🛑 Freno de velocidad activado. Esperando...")
+                else:
+                    print(f"🛑 BLOQUEO DE API: {respuesta_json['errors']}")
+                    limite_alcanzado = True
+                    break
             
             partidos = respuesta_json.get('response', [])
-            time.sleep(1.5)
+            time.sleep(7) # ⬅️ PAUSA DE 7 SEGUNDOS PARA RESPETAR EL LÍMITE
             
             for p in partidos:
                 fixture_id = p['fixture']['id']
@@ -95,7 +99,7 @@ def extraer_partidos():
                 # Si la API no tiene las estadísticas de este partido, lo saltamos para no guardar "0"
                 if not stats_data or len(stats_data) < 2:
                     print(f"   ⚠️ Sin estadísticas detalladas para este partido. Saltando...")
-                    time.sleep(1.5)
+                    time.sleep(7)
                     continue
                 
                 def get_stat(s_list, tipo):
@@ -124,7 +128,7 @@ def extraer_partidos():
                     'HC': h_c, 'AC': a_c, 'HY': h_y, 'AY': a_y,
                     'neutral': False
                 })
-                time.sleep(1.5)
+                time.sleep(7) # ⬅️ PAUSA DE 7 SEGUNDOS ENTRE CADA PARTIDO
 
     if nuevos_datos:
         df_final = pd.DataFrame(datos_existentes + nuevos_datos)
