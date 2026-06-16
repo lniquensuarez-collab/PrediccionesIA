@@ -132,8 +132,9 @@ st.markdown("### Predicciones IA (Montecarlo & UI Premium)")
 
 df_global = cargar_y_enriquecer_selecciones()
 
-if df_global is None:
-    st.error("⚠️ Faltan datos: Primero debes ejecutar el bot 'descargar_datos.py'.")
+# Escudo anti-errores: Si el archivo no existe o tiene menos de 2 partidos, se detiene amablemente
+if df_global is None or len(df_global) < 2:
+    st.warning("⚠️ Base de datos vacía. Por favor, asegúrate de que el archivo 'datos_reales_selecciones.csv' contenga partidos para que la IA pueda entrenar.")
     st.stop()
 
 with st.spinner('Procesando Algoritmos Analíticos...'):
