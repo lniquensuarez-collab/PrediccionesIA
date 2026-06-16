@@ -127,7 +127,7 @@ def entrenar_ia(_df):
     }
     return clf, le, h_mods, a_mods, team_stats
 
-st.title("🏆 ULTIMATE AI")
+st.title("🏆 ULTIMATE AI V15.5")
 st.markdown("### Predicciones IA (Montecarlo & UI Premium)")
 
 df_global = cargar_y_enriquecer_selecciones()
@@ -238,7 +238,7 @@ if st.button("🚀 GENERAR INFORME DIRECTIVO", use_container_width=True):
             a_goles = sim_a[i]
             peso_ml = p_h if h_goles > a_goles else (p_a if h_goles < a_goles else p_d)
             resultados_simulados.append({'score': f"{h_goles} - {a_goles}", 'peso': peso_ml})
-            
+        <div class="header">REPORTE DIRECTIVO V15.5: {home[:15].upper()} VS {away[:15].upper()}</div>   
         df_sim = pd.DataFrame(resultados_simulados)
         df_agrupado = df_sim.groupby('score')['peso'].sum().reset_index()
         total_peso = df_agrupado['peso'].sum()
