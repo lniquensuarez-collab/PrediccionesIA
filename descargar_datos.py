@@ -5,13 +5,12 @@ import os
 from datetime import datetime
 
 # ==============================================================================
-# 🤖 BOT EXTRACTOR INTELIGENTE V2 - API-FOOTBALL (CON ESCUDO ANTI-BASURA)
+# 🤖 BOT EXTRACTOR INTELIGENTE V3 - CONEXIÓN DIRECTA (SIN RAPIDAPI)
 # ==============================================================================
 
 API_KEY = os.environ.get("RAPIDAPI_KEY") 
 HEADERS = {
-    "X-RapidAPI-Key": API_KEY,
-    "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com"
+    "x-apisports-key": API_KEY
 }
 
 COMPETICIONES = {
@@ -48,15 +47,15 @@ def extraer_partidos():
             if limite_alcanzado: break
                 
             print(f"Buscando: {nombre_comp} ({temp})...")
-            url_fixtures = "https://api-football-v1.p.rapidapi.com/v3/fixtures"
+            url_fixtures = "https://v3.football.api-sports.io/fixtures"
             querystring = {"league": str(liga_id), "season": temp}
             
             res = requests.get(url_fixtures, headers=HEADERS, params=querystring)
             peticiones_hoy += 1
             
             respuesta_json = res.json()
-            if 'message' in respuesta_json:
-                print(f"🛑 BLOQUEO DE RAPIDAPI: {respuesta_json['message']}")
+            if 'errors' in respuesta_json and respuesta_json['errors']:
+                print(f"🛑 BLOQUEO DE API: {respuesta_json['errors']}")
                 limite_alcanzado = True
                 break
             
@@ -71,7 +70,7 @@ def extraer_partidos():
                     continue
                 
                 if peticiones_hoy >= LIMITE_DIARIO:
-                    print("\n⚠️ LÍMITE DIARIO DE 90 PETICIONES ALCANZADO. Deteniendo por hoy.")
+                    print("\n⚠️ LÍMITE DIARIO ALCANZADO. Deteniendo por hoy.")
                     limite_alcanzado = True
                     break
 
@@ -80,15 +79,14 @@ def extraer_partidos():
                 
                 print(f"[{peticiones_hoy}/{LIMITE_DIARIO}] Descargando stats: {home_team} vs {away_team}")
                 
-                url_stats = "https://api-football-v1.p.rapidapi.com/v3/fixtures/statistics"
+                url_stats = "https://v3.football.api-sports.io/fixtures/statistics"
                 res_stats = requests.get(url_stats, headers=HEADERS, params={"fixture": str(fixture_id)})
                 peticiones_hoy += 1
                 
                 respuesta_stats_json = res_stats.json()
                 
-                # --- 🛡️ ESCUDO ANTI-BASURA ---
-                if 'message' in respuesta_stats_json:
-                    print(f"🛑 Error en API al pedir estadísticas: {respuesta_stats_json['message']}")
+                if 'errors' in respuesta_stats_json and respuesta_stats_json['errors']:
+                    print(f"🛑 Error en API al pedir estadísticas: {respuesta_stats_json['errors']}")
                     limite_alcanzado = True
                     break
                     
@@ -99,7 +97,6 @@ def extraer_partidos():
                     print(f"   ⚠️ Sin estadísticas detalladas para este partido. Saltando...")
                     time.sleep(1.5)
                     continue
-                # -------------------------------
                 
                 def get_stat(s_list, tipo):
                     for item in s_list:
