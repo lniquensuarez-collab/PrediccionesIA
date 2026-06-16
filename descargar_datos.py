@@ -5,10 +5,10 @@ import os
 from datetime import datetime
 
 # ==============================================================================
-# 🤖 BOT EXTRACTOR INTELIGENTE - API-FOOTBALL (ÚLTIMOS 2 AÑOS)
+# 🤖 BOT EXTRACTOR INTELIGENTE V2 - API-FOOTBALL (CON ESCUDO ANTI-BASURA)
 # ==============================================================================
 
-API_KEY = os.environ.get("RAPIDAPI_KEY") # O pon tu clave entre comillas si lo corres local
+API_KEY = os.environ.get("RAPIDAPI_KEY") 
 HEADERS = {
     "X-RapidAPI-Key": API_KEY,
     "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com"
@@ -22,8 +22,6 @@ COMPETICIONES = {
     "Eliminatorias UEFA": 34
 }
 
-# Calcula dinámicamente el año actual y el anterior
-año_actual = datetime.now().year
 TEMPORADAS = ["2023", "2024", "2025", "2026"]
 LIMITE_DIARIO = 90
 ARCHIVO_DATOS = 'datos_reales_selecciones.csv'
@@ -33,7 +31,6 @@ def extraer_partidos():
     datos_existentes = []
     ids_procesados = set()
 
-    # Si el archivo ya existe, cargamos lo que ya descargamos para no repetirlo
     if os.path.exists(ARCHIVO_DATOS):
         df_previo = pd.read_csv(ARCHIVO_DATOS)
         datos_existentes = df_previo.to_dict('records')
@@ -54,28 +51,22 @@ def extraer_partidos():
             url_fixtures = "https://api-football-v1.p.rapidapi.com/v3/fixtures"
             querystring = {"league": str(liga_id), "season": temp}
             
-                        # Petición para listar los partidos
             res = requests.get(url_fixtures, headers=HEADERS, params=querystring)
             peticiones_hoy += 1
             
             respuesta_json = res.json()
-            
-            # --- 🕵️‍♂️ RASTREADOR DE ERRORES INYECTADO ---
             if 'message' in respuesta_json:
                 print(f"🛑 BLOQUEO DE RAPIDAPI: {respuesta_json['message']}")
-            
-            if 'errors' in respuesta_json and respuesta_json['errors']:
-                print(f"⚠️ ERROR DE PARÁMETROS ({nombre_comp} - {temp}): {respuesta_json['errors']}")
-            # -----------------------------------------------
+                limite_alcanzado = True
+                break
             
             partidos = respuesta_json.get('response', [])
-
             time.sleep(1.5)
             
             for p in partidos:
                 fixture_id = p['fixture']['id']
                 
-                # Saltar si el partido no ha terminado o si ya lo descargamos antes
+                # Saltar si el partido no ha terminado o ya lo tenemos
                 if p['fixture']['status']['short'] not in ['FT', 'AET', 'PEN'] or fixture_id in ids_procesados:
                     continue
                 
@@ -89,35 +80,46 @@ def extraer_partidos():
                 
                 print(f"[{peticiones_hoy}/{LIMITE_DIARIO}] Descargando stats: {home_team} vs {away_team}")
                 
-                # Petición para las estadísticas
                 url_stats = "https://api-football-v1.p.rapidapi.com/v3/fixtures/statistics"
                 res_stats = requests.get(url_stats, headers=HEADERS, params={"fixture": str(fixture_id)})
                 peticiones_hoy += 1
-                stats_data = res_stats.json().get('response', [])
                 
-                # Variables por defecto
-                h_s = h_st = h_c = h_y = a_s = a_st = a_c = a_y = 0
+                respuesta_stats_json = res_stats.json()
                 
-                if len(stats_data) == 2:
-                    def get_stat(s_list, tipo):
-                        for item in s_list:
-                            if item['type'] == tipo and item['value'] is not None:
-                                return int(item['value'])
-                        return 0
-
-                    h_s = get_stat(stats_data[0]['statistics'], "Total Shots")
-                    h_st = get_stat(stats_data[0]['statistics'], "Shots on Goal")
-                    h_c = get_stat(stats_data[0]['statistics'], "Corner Kicks")
-                    h_y = get_stat(stats_data[0]['statistics'], "Yellow Cards") + get_stat(stats_data[0]['statistics'], "Red Cards")
+                # --- 🛡️ ESCUDO ANTI-BASURA ---
+                if 'message' in respuesta_stats_json:
+                    print(f"🛑 Error en API al pedir estadísticas: {respuesta_stats_json['message']}")
+                    limite_alcanzado = True
+                    break
                     
-                    a_s = get_stat(stats_data[1]['statistics'], "Total Shots")
-                    a_st = get_stat(stats_data[1]['statistics'], "Shots on Goal")
-                    a_c = get_stat(stats_data[1]['statistics'], "Corner Kicks")
-                    a_y = get_stat(stats_data[1]['statistics'], "Yellow Cards") + get_stat(stats_data[1]['statistics'], "Red Cards")
+                stats_data = respuesta_stats_json.get('response', [])
+                
+                # Si la API no tiene las estadísticas de este partido, lo saltamos para no guardar "0"
+                if not stats_data or len(stats_data) < 2:
+                    print(f"   ⚠️ Sin estadísticas detalladas para este partido. Saltando...")
+                    time.sleep(1.5)
+                    continue
+                # -------------------------------
+                
+                def get_stat(s_list, tipo):
+                    for item in s_list:
+                        if item['type'] == tipo and item['value'] is not None:
+                            return int(item['value'])
+                    return 0
+
+                h_s = get_stat(stats_data[0]['statistics'], "Total Shots")
+                h_st = get_stat(stats_data[0]['statistics'], "Shots on Goal")
+                h_c = get_stat(stats_data[0]['statistics'], "Corner Kicks")
+                h_y = get_stat(stats_data[0]['statistics'], "Yellow Cards") + get_stat(stats_data[0]['statistics'], "Red Cards")
+                
+                a_s = get_stat(stats_data[1]['statistics'], "Total Shots")
+                a_st = get_stat(stats_data[1]['statistics'], "Shots on Goal")
+                a_c = get_stat(stats_data[1]['statistics'], "Corner Kicks")
+                a_y = get_stat(stats_data[1]['statistics'], "Yellow Cards") + get_stat(stats_data[1]['statistics'], "Red Cards")
 
                 nuevos_datos.append({
                     'fixture_id': fixture_id,
-                    'date': p['fixture']['date'],
+                    'date': p['fixture']['date'][:10], # Solo guardamos la fecha YYYY-MM-DD
                     'tournament': nombre_comp,
                     'home_team': home_team, 'away_team': away_team,
                     'home_score': p['goals']['home'], 'away_score': p['goals']['away'],
@@ -125,15 +127,14 @@ def extraer_partidos():
                     'HC': h_c, 'AC': a_c, 'HY': h_y, 'AY': a_y,
                     'neutral': False
                 })
-                time.sleep(1.5) # Pausa obligatoria para la API
+                time.sleep(1.5)
 
-    # Guardar todo junto (Lo viejo + Lo nuevo)
     if nuevos_datos:
         df_final = pd.DataFrame(datos_existentes + nuevos_datos)
         df_final.to_csv(ARCHIVO_DATOS, index=False)
         print(f"\n✅ Se añadieron {len(nuevos_datos)} partidos nuevos. Archivo actualizado.")
     else:
-        print("\n✅ No hay partidos nuevos para descargar.")
+        print("\n✅ No hay partidos nuevos para descargar hoy.")
 
 if __name__ == "__main__":
     extraer_partidos()
