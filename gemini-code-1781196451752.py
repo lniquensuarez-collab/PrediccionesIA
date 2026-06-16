@@ -1,5 +1,5 @@
 # ==============================================================================
-# 📱 ULTIMATE AI V15.3 - MONTECARLO & TIME DECAY (UI PREMIUM GERENCIAL)
+# 📱 ULTIMATE AI V15.5 - MONTECARLO & TIME DECAY (UI PREMIUM GERENCIAL)
 # ==============================================================================
 
 import streamlit as st
@@ -9,7 +9,6 @@ import numpy as np
 from scipy.stats import poisson
 from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
 from sklearn.preprocessing import LabelEncoder
-from collections import Counter
 import warnings
 import os
 
@@ -41,6 +40,11 @@ def cargar_y_enriquecer_selecciones():
         return None
         
     df = pd.read_csv("datos_reales_selecciones.csv")
+    
+    # Escudo Anti-Errores
+    if len(df) < 2:
+        return None
+        
     df['date'] = pd.to_datetime(df['date'], errors='coerce')
     
     np.random.seed(42)
@@ -132,8 +136,7 @@ st.markdown("### Predicciones IA (Montecarlo & UI Premium)")
 
 df_global = cargar_y_enriquecer_selecciones()
 
-# Escudo anti-errores: Si el archivo no existe o tiene menos de 2 partidos, se detiene amablemente
-if df_global is None or len(df_global) < 2:
+if df_global is None:
     st.warning("⚠️ Base de datos vacía. Por favor, asegúrate de que el archivo 'datos_reales_selecciones.csv' contenga partidos para que la IA pueda entrenar.")
     st.stop()
 
@@ -238,31 +241,26 @@ if st.button("🚀 GENERAR INFORME DIRECTIVO", use_container_width=True):
             a_goles = sim_a[i]
             peso_ml = p_h if h_goles > a_goles else (p_a if h_goles < a_goles else p_d)
             resultados_simulados.append({'score': f"{h_goles} - {a_goles}", 'peso': peso_ml})
-        <div class="header">REPORTE DIRECTIVO V15.5: {home[:15].upper()} VS {away[:15].upper()}</div>   
+            
         df_sim = pd.DataFrame(resultados_simulados)
         df_agrupado = df_sim.groupby('score')['peso'].sum().reset_index()
         total_peso = df_agrupado['peso'].sum()
         df_agrupado['prob'] = (df_agrupado['peso'] / total_peso) * 100
         top_scores = df_agrupado.sort_values(by='prob', ascending=False).head(5).to_dict('records')
         
-        # --- CÁLCULO DE PROBABILIDADES ESTADÍSTICAS ---
         def calc_poisson(expected, threshold): return poisson.sf(threshold, expected) * 100
         
         prob_over25 = calc_poisson(tot_g, 2.5)
         prob_btts = (1 - poisson.pmf(0, xg_h)) * (1 - poisson.pmf(0, xg_a)) * 100
         
-        # --- LÓGICA DEL SEMÁFORO DE RIESGO ---
         def get_color_riesgo(probabilidad):
-            if probabilidad >= 60: return "#166534" # Verde (Bajo Riesgo / Oportunidad)
-            elif probabilidad >= 45: return "#d97706" # Naranja (Riesgo Medio)
-            else: return "#991b1b" # Rojo (Alto Riesgo)
+            if probabilidad >= 60: return "#166534" 
+            elif probabilidad >= 45: return "#d97706" 
+            else: return "#991b1b" 
 
-        # 👇 AGREGA ESTAS DOS LÍNEAS QUE FALTABAN 👇
         color_o25 = get_color_riesgo(prob_over25)
         color_btts = get_color_riesgo(prob_btts)
-        # 👆 ------------------------------------ 👆
 
-        # --- BARRAS DE CALOR PARA MONTECARLO ---
         filas_tabla_marcadores = ""
         max_prob = top_scores[0]['prob'] if top_scores else 100
         for s in top_scores:
@@ -275,6 +273,7 @@ if st.button("🚀 GENERAR INFORME DIRECTIVO", use_container_width=True):
             """
             filas_tabla_marcadores += f"<tr class='hover-row'><td style='font-size:1.1em; font-weight: 900; color:#1e293b;'>{s['score']}</td><td style='padding: 8px 10px;'>{barra_html}</td></tr>"
 
+        # La variable html que causaba el problema ahora está perfectamente envuelta en comillas múltiples
         html = f"""
         <style>
             .card {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #fff; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; overflow:hidden; width: 100%; margin-bottom: 20px; }}
@@ -299,7 +298,7 @@ if st.button("🚀 GENERAR INFORME DIRECTIVO", use_container_width=True):
         </style>
         
         <div class="card">
-            <div class="header">REPORTE DIRECTIVO V15.3: {home[:15].upper()} VS {away[:15].upper()}</div>
+            <div class="header">REPORTE DIRECTIVO V15.5: {home[:15].upper()} VS {away[:15].upper()}</div>
             
             <div class="teams-row">
                 <div class="team-nm">{home[:10]}</div>
