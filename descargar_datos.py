@@ -18,13 +18,14 @@ COMPETICIONES = {
     "World Cup": 1,
     "Euro": 4,
     "Copa America": 9,
+    "Africa Cup of Nations": 6,   # Copa Africana de Naciones (Torneo principal)
     "Eliminatorias CONMEBOL": 34, 
     "Eliminatorias UEFA": 32,
-    "Eliminatorias CONCACAF": 33, # Para que aparezca Haití, México, USA
-    "Eliminatorias AFC": 35,      # Para que aparezca Irak, Japón, Corea
-    "Eliminatorias CAF": 29,      # Para selecciones de África
-    "UEFA Nations League": 5,     # Para los partidos de Noruega
-    "Friendlies": 10              # Para Amistosos Internacionales
+    "Eliminatorias CONCACAF": 33, # Norte y Centroamérica (México, USA, Haití)
+    "Eliminatorias AFC": 35,      # Asia (Japón, Corea, Irak)
+    "Eliminatorias CAF": 29,      # África (Eliminatorias Mundialistas)
+    "UEFA Nations League": 5,     # Torneo europeo (Noruega, Suecia, etc.)
+    "Friendlies": 10              # Amistosos Internacionales de la FIFA
 }
 
 TEMPORADAS = ["2023", "2024", "2025", "2026"]
