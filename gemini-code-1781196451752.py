@@ -127,7 +127,7 @@ def entrenar_ia(_df):
     }
     return clf, le, h_mods, a_mods, team_stats
 
-st.title("🏆 ULTIMATE AI V15.3")
+st.title("🏆 ULTIMATE AI")
 st.markdown("### Predicciones IA (Montecarlo & UI Premium)")
 
 df_global = cargar_y_enriquecer_selecciones()
