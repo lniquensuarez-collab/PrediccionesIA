@@ -19,7 +19,12 @@ COMPETICIONES = {
     "Euro": 4,
     "Copa America": 9,
     "Eliminatorias CONMEBOL": 34, 
-    "Eliminatorias UEFA": 32
+    "Eliminatorias UEFA": 32,
+    "Eliminatorias CONCACAF": 33, # Para que aparezca Haití, México, USA
+    "Eliminatorias AFC": 35,      # Para que aparezca Irak, Japón, Corea
+    "Eliminatorias CAF": 29,      # Para selecciones de África
+    "UEFA Nations League": 5,     # Para los partidos de Noruega
+    "Friendlies": 10              # Para Amistosos Internacionales
 }
 
 TEMPORADAS = ["2023", "2024", "2025", "2026"]
