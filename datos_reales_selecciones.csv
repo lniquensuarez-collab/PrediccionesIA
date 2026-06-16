@@ -1,11 +1,1 @@
-fixture_id,date,tournament,home_team,away_team,home_score,away_score,HS,AS,HST,AST,HC,AC,HY,AY,neutral
-101,2024-01-10,World Cup,Peru,Brazil,0,2,8,15,3,7,4,6,2,1,False
-102,2024-01-12,Eliminatorias CONMEBOL,Argentina,Colombia,1,1,12,10,5,4,5,4,3,3,False
-103,2024-02-15,World Cup,Uruguay,Chile,2,0,14,7,6,2,7,3,1,4,False
-104,2024-03-20,Eliminatorias CONMEBOL,Brazil,Argentina,1,0,11,9,4,3,5,4,4,5,False
-105,2024-04-05,World Cup,Colombia,Peru,2,1,16,9,7,4,8,3,2,2,False
-106,2024-05-11,Eliminatorias CONMEBOL,Chile,Brazil,0,3,6,18,2,8,2,9,3,1,False
-107,2024-06-18,World Cup,Argentina,Uruguay,1,1,13,11,4,4,6,5,2,3,False
-108,2024-07-22,Eliminatorias CONMEBOL,Peru,Chile,1,0,10,8,4,3,4,4,4,4,False
-109,2024-08-30,World Cup,Brazil,Colombia,2,2,15,12,6,5,7,4,1,2,False
-110,2024-09-10,Eliminatorias CONMEBOL,Uruguay,Peru,2,0,14,5,5,1,6,2,2,3,False
+
