@@ -1,1 +1,5 @@
-fixture_id,date,tournament,home_team,away_team,home_score,away_score,HS,AS,HST,AST,HC,AC,HY,AY,neutral⁠
+fixture_id,date,tournament,home_team,away_team,home_score,away_score,HS,AS,HST,AST,HC,AC,HY,AY,neutral
+1,2024-01-01,World Cup,Peru,Brazil,1,0,10,12,4,5,4,6,2,1,False
+2,2024-01-02,World Cup,Brazil,Peru,3,0,15,5,8,1,8,2,1,3,False
+3,2024-01-03,World Cup,Peru,Brazil,1,1,11,14,3,6,5,7,2,2,False
+4,2024-01-04,World Cup,Brazil,Peru,2,1,13,8,6,3,7,3,1,2,False
