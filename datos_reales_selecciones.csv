@@ -1,1 +1,56 @@
 fixture_id,date,tournament,home_team,away_team,home_score,away_score,HS,AS,HST,AST,HC,AC,HY,AY,neutral
+1138697,2024-01-13,Africa Cup of Nations,Ivory Coast,Guinea-Bissau,2,0,10,10,4,3,6,2,2,1,False
+1138698,2024-01-14,Africa Cup of Nations,Nigeria,Equatorial Guinea,1,1,19,7,7,1,2,3,1,2,False
+1138699,2024-01-14,Africa Cup of Nations,Egypt,Mozambique,2,2,21,6,5,2,7,2,1,3,False
+1138700,2024-01-14,Africa Cup of Nations,Ghana,Cape Verde Islands,1,2,10,15,1,5,2,5,3,3,False
+1138701,2024-01-15,Africa Cup of Nations,Senegal,Gambia,3,0,12,10,5,2,5,4,2,1,False
+1138702,2024-01-15,Africa Cup of Nations,Cameroon,Guinea,1,1,13,6,2,2,5,0,2,2,False
+1138703,2024-01-15,Africa Cup of Nations,Algeria,Angola,1,1,16,7,3,1,14,2,4,1,False
+1138704,2024-01-16,Africa Cup of Nations,Burkina Faso,Mauritania,1,0,11,9,5,4,3,4,3,2,False
+1138705,2024-01-16,Africa Cup of Nations,Tunisia,Namibia,0,1,10,13,4,6,8,7,0,0,False
+1138706,2024-01-16,Africa Cup of Nations,Mali,South Africa,2,0,16,12,7,6,2,3,3,2,False
+1138707,2024-01-17,Africa Cup of Nations,Morocco,Tanzania,3,0,14,2,7,0,5,2,2,6,False
+1138708,2024-01-17,Africa Cup of Nations,Congo DR,Zambia,1,1,25,3,6,1,7,0,1,1,False
+1138709,2024-01-18,Africa Cup of Nations,Equatorial Guinea,Guinea-Bissau,4,2,8,13,6,2,2,7,2,0,False
+1138710,2024-01-18,Africa Cup of Nations,Ivory Coast,Nigeria,0,1,14,11,3,1,5,6,0,1,False
+1138712,2024-01-18,Africa Cup of Nations,Egypt,Ghana,2,2,11,6,5,3,3,4,0,1,False
+1138714,2024-01-19,Africa Cup of Nations,Cape Verde Islands,Mozambique,3,0,11,8,5,2,1,6,1,0,False
+1138711,2024-01-19,Africa Cup of Nations,Senegal,Cameroon,3,1,5,5,3,1,8,9,1,3,False
+1138713,2024-01-19,Africa Cup of Nations,Guinea,Gambia,1,0,16,7,6,0,7,5,2,2,False
+1138715,2024-01-20,Africa Cup of Nations,Algeria,Burkina Faso,2,2,15,6,4,3,4,1,2,5,False
+1138716,2024-01-20,Africa Cup of Nations,Mauritania,Angola,2,3,14,19,4,6,6,11,2,1,False
+1138717,2024-01-20,Africa Cup of Nations,Tunisia,Mali,1,1,5,12,1,1,3,4,2,0,False
+1138718,2024-01-21,Africa Cup of Nations,Morocco,Congo DR,1,1,11,10,4,2,3,5,3,1,False
+1138719,2024-01-21,Africa Cup of Nations,Zambia,Tanzania,1,1,11,6,4,2,5,3,4,0,False
+1138720,2024-01-21,Africa Cup of Nations,South Africa,Namibia,4,0,12,4,8,1,6,2,1,0,False
+1138722,2024-01-22,Africa Cup of Nations,Guinea-Bissau,Nigeria,0,1,12,11,5,1,3,2,0,3,False
+1138721,2024-01-22,Africa Cup of Nations,Equatorial Guinea,Ivory Coast,4,0,10,22,7,3,1,11,3,2,False
+1138723,2024-01-22,Africa Cup of Nations,Mozambique,Ghana,2,2,11,8,4,4,6,3,4,5,False
+1138724,2024-01-22,Africa Cup of Nations,Cape Verde Islands,Egypt,2,2,6,27,3,7,4,8,1,2,False
+1138726,2024-01-23,Africa Cup of Nations,Gambia,Cameroon,2,3,15,13,7,3,7,5,4,0,False
+1138725,2024-01-23,Africa Cup of Nations,Guinea,Senegal,0,2,4,12,1,2,0,6,2,2,False
+1138728,2024-01-23,Africa Cup of Nations,Mauritania,Algeria,1,0,17,16,7,6,5,6,3,3,False
+1138727,2024-01-23,Africa Cup of Nations,Angola,Burkina Faso,2,0,6,20,5,3,1,7,3,1,False
+1138730,2024-01-24,Africa Cup of Nations,Namibia,Mali,0,0,5,10,1,2,9,3,1,0,False
+1138729,2024-01-24,Africa Cup of Nations,South Africa,Tunisia,0,0,11,11,2,2,5,6,0,0,False
+1138731,2024-01-24,Africa Cup of Nations,Tanzania,Congo DR,0,0,4,9,0,3,1,4,0,1,False
+1138732,2024-01-24,Africa Cup of Nations,Zambia,Morocco,0,1,11,19,2,7,3,7,0,1,False
+1166106,2024-01-27,Africa Cup of Nations,Angola,Namibia,3,0,11,11,4,3,6,3,1,4,False
+1166107,2024-01-27,Africa Cup of Nations,Nigeria,Cameroon,2,0,8,6,4,0,3,1,2,2,False
+1166108,2024-01-28,Africa Cup of Nations,Equatorial Guinea,Guinea,0,1,5,10,0,4,2,2,1,1,False
+1166109,2024-01-28,Africa Cup of Nations,Egypt,Congo DR,1,1,10,12,3,1,2,4,5,3,False
+1166110,2024-01-29,Africa Cup of Nations,Cape Verde Islands,Mauritania,1,0,18,11,4,0,11,1,1,1,False
+1166111,2024-01-29,Africa Cup of Nations,Senegal,Ivory Coast,1,1,13,8,4,4,6,2,4,3,False
+1166112,2024-01-30,Africa Cup of Nations,Mali,Burkina Faso,2,1,14,8,4,4,1,2,1,3,False
+1166113,2024-01-30,Africa Cup of Nations,Morocco,South Africa,0,2,13,5,2,3,6,2,2,3,False
+1169130,2024-02-02,Africa Cup of Nations,Nigeria,Angola,1,0,13,10,3,2,4,7,1,3,False
+1169262,2024-02-02,Africa Cup of Nations,Congo DR,Guinea,3,1,12,7,3,3,3,4,1,2,False
+1169663,2024-02-03,Africa Cup of Nations,Mali,Ivory Coast,1,2,11,11,4,3,10,2,4,9,False
+1169664,2024-02-03,Africa Cup of Nations,Cape Verde Islands,South Africa,0,0,25,16,2,6,10,4,1,0,False
+1171548,2024-02-07,Africa Cup of Nations,Nigeria,South Africa,1,1,14,14,6,5,5,4,2,1,False
+1171549,2024-02-07,Africa Cup of Nations,Ivory Coast,Congo DR,1,0,14,7,2,2,6,6,0,0,False
+1172282,2024-02-10,Africa Cup of Nations,South Africa,Congo DR,0,0,6,13,3,3,2,1,0,1,False
+1172283,2024-02-11,Africa Cup of Nations,Nigeria,Ivory Coast,1,2,5,18,1,8,4,5,2,3,False
+1125866,2023-11-16,Eliminatorias CAF,Botswana,Mozambique,2,3,0,0,0,0,0,0,0,0,False
+1125852,2023-11-18,Eliminatorias CAF,South Africa,Benin,2,1,7,5,3,1,5,2,1,1,False
+1125892,2023-11-19,Eliminatorias CAF,Mozambique,Algeria,0,2,0,0,0,0,8,2,0,0,False
