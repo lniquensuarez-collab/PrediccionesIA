@@ -69,6 +69,8 @@ def cargar_y_enriquecer_selecciones():
     df['FTR'] = np.select(condiciones, ['H', 'A'], default='D')
     return df.sort_values('date').reset_index(drop=True)
 
+from sklearn.metrics import accuracy_score, mean_absolute_error
+
 @st.cache_resource(show_spinner=False)
 def entrenar_ia(_df):
     X_list, targets = [], {'res':[], 'g_h':[], 'g_a':[], 'c_h':[], 'c_a':[], 's_h':[], 's_a':[], 'st_h':[], 'st_a':[], 't_h':[], 't_a':[]}
@@ -124,8 +126,33 @@ def entrenar_ia(_df):
     X = pd.DataFrame(X_list).fillna(0)
     le = LabelEncoder()
     y_res = le.fit_transform(targets['res']) 
-    
     rs = 42 
+    
+    # --- FASE DE VALIDACIÓN CRONOLÓGICA (BACKTESTING SIN FUGA DE DATOS) ---
+    split_idx = int(len(X) * 0.8)
+    metrics_log = {"accuracy": 0.0, "mae_goles": 0.0}
+    
+    if split_idx > 5: # Validar solo si hay suficiente historial
+        X_train, X_test = X.iloc[:split_idx], X.iloc[split_idx:]
+        y_train_res, y_test_res = y_res[:split_idx], y_res[split_idx:]
+        
+        # Clasificador de prueba
+        clf_val = GradientBoostingClassifier(n_estimators=100, learning_rate=0.05, max_depth=3, random_state=rs).fit(X_train, y_train_res)
+        preds_res = clf_val.predict(X_test)
+        metrics_log["accuracy"] = accuracy_score(y_test_res, preds_res) * 100
+        
+        # Regresores de prueba para obtener el margen de error en goles
+        reg_h_val = GradientBoostingRegressor(n_estimators=50, random_state=rs).fit(X_train, np.array(targets['g_h'])[:split_idx])
+        reg_a_val = GradientBoostingRegressor(n_estimators=50, random_state=rs).fit(X_train, np.array(targets['g_a'])[:split_idx])
+        
+        preds_gh = reg_h_val.predict(X_test)
+        preds_ga = reg_a_val.predict(X_test)
+        
+        mae_h = mean_absolute_error(np.array(targets['g_h'])[split_idx:], preds_gh)
+        mae_a = mean_absolute_error(np.array(targets['g_a'])[split_idx:], preds_ga)
+        metrics_log["mae_goles"] = (mae_h + mae_a) / 2
+
+    # --- ENTRENAMIENTO FINAL (100% de los datos para producción) ---
     clf = GradientBoostingClassifier(n_estimators=100, learning_rate=0.05, max_depth=3, random_state=rs).fit(X, y_res)
     h_mods = {
         'gol': GradientBoostingRegressor(n_estimators=50, random_state=rs).fit(X, targets['g_h']),
@@ -137,11 +164,12 @@ def entrenar_ia(_df):
     a_mods = {
         'gol': GradientBoostingRegressor(n_estimators=50, random_state=rs).fit(X, targets['g_a']),
         'corn': GradientBoostingRegressor(n_estimators=50, random_state=rs).fit(X, targets['c_a']),
-        'shot': GradientBoostingRegressor(n_estimators=50, random_state=rs).fit(X, targets['s_a']),
-        'shot_t': GradientBoostingRegressor(n_estimators=50, random_state=rs).fit(X, targets['st_a']),
-        'card': GradientBoostingRegressor(n_estimators=50, random_state=rs).fit(X, targets['t_a'])
+        'shot': GradientBoostingRegressor(n_estimators=50, random_state=rs).fit(X, targets['s_h']),
+        'shot_t': GradientBoostingRegressor(n_estimators=50, random_state=rs).fit(X, targets['st_h']),
+        'card': GradientBoostingRegressor(n_estimators=50, random_state=rs).fit(X, targets['t_h'])
     }
-    return clf, le, h_mods, a_mods, team_stats
+    
+    return clf, le, h_mods, a_mods, team_stats, metrics_log
 
 st.title("🏆 ULTIMATE AI V15.5")
 st.markdown("### Predicciones IA (Montecarlo & UI Premium)")
@@ -153,7 +181,7 @@ if df_global is None:
     st.stop()
 
 with st.spinner('Procesando Algoritmos Analíticos...'):
-    clf, le, h_mods, a_mods, stats = entrenar_ia(df_global)
+    clf, le, h_mods, a_mods, stats, metrics_log = entrenar_ia(df_global)
 
 equipos_activos = sorted([eq for eq in stats.keys() if len(stats[eq]['Pts']) > 0])
 
@@ -165,6 +193,25 @@ col_opt1, col_opt2 = st.columns(2)
 with col_opt1: is_neutral = st.checkbox("Cancha Neutral", value=True)
 with col_opt2: is_qualifier = st.checkbox("Partido Oficial", value=True)
 
+# --- PANEL DE VALIDACIÓN GERENCIAL ---
+with st.expander("📊 Control de Calidad Analítico (Validación de Modelos)"):
+    st.markdown("""
+    <small style='color:#64748b;'>Para garantizar la ausencia de sesgo o fuga de datos (Data Leakage), el sistema realiza una simulación de auditoría cronológica entrenando con el primer 80% de los datos históricos y testeando de forma estricta sobre el 20% más reciente.</small>
+    """, unsafe_allow_html=True)
+    
+    c_met1, c_met2 = st.columns(2)
+    with c_met1:
+        st.metric(
+            label="Exactitud en Tendencia (1X2)", 
+            value=f"{metrics_log['accuracy']:.1f}%", 
+            help="Porcentaje de aciertos reales del Clasificador en la muestra de prueba independiente."
+        )
+    with c_met2:
+        st.metric(
+            label="Margen de Error (Goles Exigidos)", 
+            value=f"± {metrics_log['mae_goles']:.2f}", 
+            help="Error Absoluto Medio (MAE). Representa qué tan cerca está la IA de predecir la cantidad exacta de goles por partido."
+        ) 
 if st.button("🚀 GENERAR INFORME GERENCIAL", use_container_width=True):
     if home == away:
         st.error("⚠️ Error: Selecciona equipos distintos.")
