@@ -46,10 +46,18 @@ def cargar_y_enriquecer_selecciones():
         
     df['date'] = pd.to_datetime(df['date'], errors='coerce')
     
-    # --- INTEGRACIÓN DE RANKING FIFA REAL ---
+    # --- INTEGRACIÓN DEL NUEVO FORMATO DE RANKING FIFA ---
     if os.path.exists("ranking_fifa.csv"):
         df_ranking = pd.read_csv("ranking_fifa.csv")
-        ranking_dict = dict(zip(df_ranking['equipo'], df_ranking['ranking_puntos']))
+        
+        # Ordenamos cronológicamente por año (date) y semestre de forma ascendente
+        df_ranking = df_ranking.sort_values(by=['date', 'semester'], ascending=True)
+        
+        # Eliminamos duplicados manteniendo el último registro (el más reciente) de cada equipo
+        df_ranking_latest = df_ranking.drop_duplicates(subset=['team'], keep='last')
+        
+        # Creamos el diccionario usando las nuevas columnas de tu formato ('team' y 'rank')
+        ranking_dict = dict(zip(df_ranking_latest['team'], df_ranking_latest['rank']))
     else:
         ranking_dict = {}
     
@@ -157,7 +165,7 @@ col_opt1, col_opt2 = st.columns(2)
 with col_opt1: is_neutral = st.checkbox("Cancha Neutral", value=True)
 with col_opt2: is_qualifier = st.checkbox("Partido Oficial", value=True)
 
-if st.button("🚀 GENERAR INFORME DIRECTIVO", use_container_width=True):
+if st.button("🚀 GENERAR INFORME GERENCIAL", use_container_width=True):
     if home == away:
         st.error("⚠️ Error: Selecciona equipos distintos.")
     else:
@@ -178,7 +186,6 @@ if st.button("🚀 GENERAR INFORME DIRECTIVO", use_container_width=True):
         def generar_input_ia(t_local, t_visita):
             h_data, a_data = stats[t_local], stats[t_visita]
             
-            # Recuperar el último ranking real calculado de forma segura
             try:
                 hr = df_global[df_global['home_team'] == t_local]['home_rank'].iloc[-1]
             except:
@@ -309,7 +316,7 @@ if st.button("🚀 GENERAR INFORME DIRECTIVO", use_container_width=True):
         </style>
         
         <div class="card">
-            <div class="header">REPORTE DIRECTIVO V15.5: {home[:15].upper()} VS {away[:15].upper()}</div>
+            <div class="header">INFORME GERENCIAL V15.5: {home[:15].upper()} VS {away[:15].upper()}</div>
             
             <div class="teams-row">
                 <div class="team-nm">{home[:10]}</div>
