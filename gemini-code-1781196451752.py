@@ -153,6 +153,9 @@ def entrenar_ia(_df):
         metrics_log["mae_goles"] = (mae_h + mae_a) / 2
 
     # --- ENTRENAMIENTO FINAL (100% de los datos para producción) ---
+    # --- DENTRO DE LA FUNCIÓN entrenar_ia ---
+    # ... (código anterior igual)
+
     clf = GradientBoostingClassifier(n_estimators=100, learning_rate=0.05, max_depth=3, random_state=rs).fit(X, y_res)
     h_mods = {
         'gol': GradientBoostingRegressor(n_estimators=50, random_state=rs).fit(X, targets['g_h']),
@@ -161,12 +164,14 @@ def entrenar_ia(_df):
         'shot_t': GradientBoostingRegressor(n_estimators=50, random_state=rs).fit(X, targets['st_h']),
         'card': GradientBoostingRegressor(n_estimators=50, random_state=rs).fit(X, targets['t_h'])
     }
+    
+    # ¡AQUÍ ESTÁ EL CAMBIO! Cambiar _h por _a en shot, shot_t y card:
     a_mods = {
         'gol': GradientBoostingRegressor(n_estimators=50, random_state=rs).fit(X, targets['g_a']),
         'corn': GradientBoostingRegressor(n_estimators=50, random_state=rs).fit(X, targets['c_a']),
-        'shot': GradientBoostingRegressor(n_estimators=50, random_state=rs).fit(X, targets['s_h']),
-        'shot_t': GradientBoostingRegressor(n_estimators=50, random_state=rs).fit(X, targets['st_h']),
-        'card': GradientBoostingRegressor(n_estimators=50, random_state=rs).fit(X, targets['t_h'])
+        'shot': GradientBoostingRegressor(n_estimators=50, random_state=rs).fit(X, targets['s_a']),     # <-- Corregido
+        'shot_t': GradientBoostingRegressor(n_estimators=50, random_state=rs).fit(X, targets['st_a']), # <-- Corregido
+        'card': GradientBoostingRegressor(n_estimators=50, random_state=rs).fit(X, targets['t_a'])     # <-- Corregido
     }
     
     return clf, le, h_mods, a_mods, team_stats, metrics_log
