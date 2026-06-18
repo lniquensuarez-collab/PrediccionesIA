@@ -136,3 +136,50 @@ fixture_id,date,tournament,home_team,away_team,home_score,away_score,HS,AS,HST,A
 1125866,2023-11-16,Eliminatorias CAF,Botswana,Mozambique,2,3,0,0,0,0,0,0,0,0,False
 1125852,2023-11-18,Eliminatorias CAF,South Africa,Benin,2,1,7,5,3,1,5,2,1,1,False
 1125892,2023-11-19,Eliminatorias CAF,Mozambique,Algeria,0,2,0,0,0,0,8,2,0,0,False
+1023102,2023-06-25,Copa Oro,USA,Jamaica,1,1,13,6,4,3,5,2,0,3,False
+1036605,2023-06-25,Copa Oro,Trinidad and Tobago,St. Kitts and Nevis,3,0,14,10,4,1,8,8,0,2,False
+1023103,2023-06-25,Copa Oro,Haiti,Qatar,2,1,15,10,3,2,4,1,3,3,False
+1023104,2023-06-26,Copa Oro,Mexico,Honduras,4,0,17,6,6,1,4,5,2,2,False
+1036606,2023-06-26,Copa Oro,El Salvador,Martinique,1,2,22,7,10,4,7,4,0,3,False
+1023105,2023-06-27,Copa Oro,Costa Rica,Panama,1,2,6,15,4,10,1,5,2,1,False
+1036607,2023-06-27,Copa Oro,Canada,Guadeloupe,2,2,17,9,5,4,5,2,2,2,False
+1023106,2023-06-28,Copa Oro,Guatemala,Cuba,1,0,17,6,7,1,2,3,3,5,False
+1023107,2023-06-28,Copa Oro,Jamaica,Trinidad and Tobago,4,1,13,3,6,1,2,0,3,3,False
+1036608,2023-06-29,Copa Oro,St. Kitts and Nevis,USA,0,6,34,2,15,0,8,1,0,3,False
+1023108,2023-06-29,Copa Oro,Qatar,Honduras,1,1,5,16,3,4,1,6,3,2,False
+1023109,2023-06-30,Copa Oro,Haiti,Mexico,1,3,6,32,2,10,6,9,1,1,False
+1036609,2023-06-30,Copa Oro,Martinique,Panama,1,2,7,16,3,5,2,9,1,1,False
+1023110,2023-07-01,Copa Oro,El Salvador,Costa Rica,0,0,9,12,2,3,2,3,1,2,False
+1036610,2023-07-01,Copa Oro,Cuba,Guadeloupe,1,4,13,17,2,8,5,4,2,2,False
+1023111,2023-07-02,Copa Oro,Guatemala,Canada,0,0,11,9,2,3,6,3,1,5,False
+1023112,2023-07-02,Copa Oro,USA,Trinidad and Tobago,6,0,23,9,8,3,5,4,1,1,False
+1036611,2023-07-02,Copa Oro,Jamaica,St. Kitts and Nevis,5,0,18,9,6,2,7,1,0,2,False
+1023114,2023-07-03,Copa Oro,Mexico,Qatar,0,1,25,1,6,1,7,0,2,8,False
+1023113,2023-07-03,Copa Oro,Honduras,Haiti,2,1,20,18,7,7,1,9,1,1,False
+1023115,2023-07-04,Copa Oro,Canada,Cuba,4,2,14,9,9,2,5,5,1,2,False
+1036612,2023-07-04,Copa Oro,Guadeloupe,Guatemala,2,3,17,10,8,4,3,1,5,3,False
+1023116,2023-07-05,Copa Oro,Panama,El Salvador,2,2,14,8,2,3,6,7,4,2,False
+1036613,2023-07-05,Copa Oro,Costa Rica,Martinique,6,4,13,14,7,6,4,5,3,3,False
+1051773,2023-07-08,Copa Oro,Panama,Qatar,4,0,17,4,6,1,3,5,0,0,False
+1051774,2023-07-09,Copa Oro,Mexico,Costa Rica,2,0,14,9,8,1,4,7,1,3,False
+1051775,2023-07-09,Copa Oro,Guatemala,Jamaica,0,1,11,18,6,3,1,6,1,3,False
+1051776,2023-07-09,Copa Oro,USA,Canada,2,2,21,5,8,2,13,3,2,4,False
+1060869,2023-07-12,Copa Oro,USA,Panama,1,1,14,12,3,5,2,3,1,1,False
+1060870,2023-07-13,Copa Oro,Jamaica,Mexico,0,3,8,13,3,5,3,8,3,2,False
+1065809,2023-07-16,Copa Oro,Mexico,Panama,1,0,23,14,7,2,2,1,4,4,False
+1123695,2023-09-19,Copa Asiática,Odisha,ATK Mohun Bagan,0,4,2,17,0,9,5,6,5,1,False
+1123696,2023-09-19,Copa Asiática,Maziya,Bashundhara Kings,3,1,9,19,5,5,1,5,2,2,False
+1123694,2023-09-19,Copa Asiática,Al Kahrabaa,Al Kuwait,0,0,17,13,5,1,4,2,3,1,False
+1123697,2023-09-19,Copa Asiática,Al Wihdat,Al Ittihad,2,0,13,9,3,3,5,1,2,2,False
+1123698,2023-09-20,Copa Asiática,Stallion,Bali United,2,5,17,14,7,6,11,9,1,2,False
+1123699,2023-09-20,Copa Asiática,Terengganu,Central Coast Mariners,1,0,11,23,2,7,1,5,2,2,False
+1123704,2023-09-21,Copa Asiática,Hai Phong,PSM Makassar,3,0,15,10,4,3,7,8,0,0,False
+1123703,2023-09-21,Copa Asiática,Shan United,Macarthur,0,3,7,8,2,6,2,7,2,1,False
+1123709,2023-10-02,Copa Asiática,Bashundhara Kings,Odisha,3,2,19,14,9,5,3,3,3,4,False
+1123710,2023-10-02,Copa Asiática,ATK Mohun Bagan,Maziya,2,1,20,6,9,1,19,2,3,2,False
+1123708,2023-10-02,Copa Asiática,Al Riffa,Al Zawra'a,1,1,13,12,4,6,4,6,2,1,False
+1123714,2023-10-03,Copa Asiática,Al Kuwait,Al Wihdat,2,1,13,13,5,1,1,5,1,2,False
+1123713,2023-10-03,Copa Asiática,Al Ittihad,Al Kahrabaa,0,2,11,19,4,5,2,6,3,2,False
+1123715,2023-10-04,Copa Asiática,Central Coast Mariners,Stallion,9,1,29,8,17,3,9,5,2,1,False
+1123716,2023-10-04,Copa Asiática,Bali United,Terengganu,1,1,14,21,3,6,7,11,0,2,False
+1123726,2023-10-23,Copa Asiática,Al Zawra'a,Al Nejmeh,4,1,22,9,7,3,9,1,2,0,False
