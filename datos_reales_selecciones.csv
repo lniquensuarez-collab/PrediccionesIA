@@ -167,19 +167,4 @@ fixture_id,date,tournament,home_team,away_team,home_score,away_score,HS,AS,HST,A
 1060869,2023-07-12,Copa Oro,USA,Panama,1,1,14,12,3,5,2,3,1,1,False
 1060870,2023-07-13,Copa Oro,Jamaica,Mexico,0,3,8,13,3,5,3,8,3,2,False
 1065809,2023-07-16,Copa Oro,Mexico,Panama,1,0,23,14,7,2,2,1,4,4,False
-1123695,2023-09-19,Copa Asiática,Odisha,ATK Mohun Bagan,0,4,2,17,0,9,5,6,5,1,False
-1123696,2023-09-19,Copa Asiática,Maziya,Bashundhara Kings,3,1,9,19,5,5,1,5,2,2,False
-1123694,2023-09-19,Copa Asiática,Al Kahrabaa,Al Kuwait,0,0,17,13,5,1,4,2,3,1,False
-1123697,2023-09-19,Copa Asiática,Al Wihdat,Al Ittihad,2,0,13,9,3,3,5,1,2,2,False
-1123698,2023-09-20,Copa Asiática,Stallion,Bali United,2,5,17,14,7,6,11,9,1,2,False
-1123699,2023-09-20,Copa Asiática,Terengganu,Central Coast Mariners,1,0,11,23,2,7,1,5,2,2,False
-1123704,2023-09-21,Copa Asiática,Hai Phong,PSM Makassar,3,0,15,10,4,3,7,8,0,0,False
-1123703,2023-09-21,Copa Asiática,Shan United,Macarthur,0,3,7,8,2,6,2,7,2,1,False
-1123709,2023-10-02,Copa Asiática,Bashundhara Kings,Odisha,3,2,19,14,9,5,3,3,3,4,False
-1123710,2023-10-02,Copa Asiática,ATK Mohun Bagan,Maziya,2,1,20,6,9,1,19,2,3,2,False
-1123708,2023-10-02,Copa Asiática,Al Riffa,Al Zawra'a,1,1,13,12,4,6,4,6,2,1,False
-1123714,2023-10-03,Copa Asiática,Al Kuwait,Al Wihdat,2,1,13,13,5,1,1,5,1,2,False
-1123713,2023-10-03,Copa Asiática,Al Ittihad,Al Kahrabaa,0,2,11,19,4,5,2,6,3,2,False
-1123715,2023-10-04,Copa Asiática,Central Coast Mariners,Stallion,9,1,29,8,17,3,9,5,2,1,False
-1123716,2023-10-04,Copa Asiática,Bali United,Terengganu,1,1,14,21,3,6,7,11,0,2,False
-1123726,2023-10-23,Copa Asiática,Al Zawra'a,Al Nejmeh,4,1,22,9,7,3,9,1,2,0,False
+
