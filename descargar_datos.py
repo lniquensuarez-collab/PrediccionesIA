@@ -25,10 +25,10 @@ COMPETICIONES = {
     "Eliminatorias AFC": 35,      # Asia (Japón, Corea, Irak)
     "Eliminatorias AFC": 32,       # <- Añadir para Japón, Corea del Sur, Arabia
     "Copa Oro": 22,                # <-- ¡Asegúrate de que esta coma esté aquí!
-    "Copa Asiática": 18            # La última línea no necesita coma
+    "Copa Asiática": 18,            # La última línea no necesita coma
     "Eliminatorias CAF": 29,      # África (Eliminatorias Mundialistas)
     "UEFA Nations League": 5,     # Torneo europeo (Noruega, Suecia, etc.)
-    "Friendlies": 10              # Amistosos Internacionales de la FIFA
+    "Friendlies": 10,              # Amistosos Internacionales de la FIFA
 }
 
 TEMPORADAS = ["2023", "2024", "2025", "2026"]
