@@ -23,6 +23,9 @@ COMPETICIONES = {
     "Eliminatorias UEFA": 32,
     "Eliminatorias CONCACAF": 33, # Norte y Centroamérica (México, USA, Haití)
     "Eliminatorias AFC": 35,      # Asia (Japón, Corea, Irak)
+    "Eliminatorias AFC": 32,       # <- Añadir para Japón, Corea del Sur, Arabia
+    "Copa Oro": 22,                # <- Torneo continental de CONCACAF
+    "Copa Asiática": 18            # <- Torneo continental de Asia
     "Eliminatorias CAF": 29,      # África (Eliminatorias Mundialistas)
     "UEFA Nations League": 5,     # Torneo europeo (Noruega, Suecia, etc.)
     "Friendlies": 10              # Amistosos Internacionales de la FIFA
