@@ -26,13 +26,14 @@ COMPETICIONES = {
     "Eliminatorias AFC": 32,       # <- Añadir para Japón, Corea del Sur, Arabia
     "Copa Oro": 22,                # <-- ¡Asegúrate de que esta coma esté aquí!
     "Eliminatorias CAF": 29,      # África (Eliminatorias Mundialistas)
+    "Asian Cup - Qualification": 35,
     "UEFA Nations League": 5,     # Torneo europeo (Noruega, Suecia, etc.)
     "Eliminatorias CONMEBOL": 340,
-    "Eliminatorias UEFA": 34,
     "Eliminatorias CONCACAF": 31,
-    "Copa Asiática": 17,           # <-- CORREGIDO: ID 17 para Selecciones Nacionales de Asia
+    "Copa Asiática": 7,           # <-- CORREGIDO: ID 17 para Selecciones Nacionales de Asia
     "UEFA Nations League": 5,
-    "Friendlies": 10              # Amistosos Internacionales de la FIFA
+    "Friendlies": 10,              # Amistosos Internacionales de la FIFA
+    "CONCACAF Nations League": 536
 }
 
 TEMPORADAS = ["2023", "2024", "2025", "2026"]
