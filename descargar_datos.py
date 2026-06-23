@@ -31,6 +31,7 @@ COMPETICIONES = {
     "Eliminatorias CONMEBOL": 340,
     "Eliminatorias CONCACAF": 31,
     "Copa Asiática": 7,           # <-- CORREGIDO: ID 17 para Selecciones Nacionales de Asia
+    " Asian Cup - Qualification": 35,
     "UEFA Nations League": 5,
     "Friendlies": 10,              # Amistosos Internacionales de la FIFA
     "CONCACAF Nations League": 536
