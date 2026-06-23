@@ -18,23 +18,17 @@ COMPETICIONES = {
     "World Cup": 1,
     "Euro": 4,
     "Copa America": 9,
-    "Africa Cup of Nations": 6,   # Copa Africana de Naciones (Torneo principal)
-    "Eliminatorias CONMEBOL": 34, 
-    "Eliminatorias UEFA": 32,
-    "Eliminatorias CONCACAF": 33, # Norte y Centroamérica (México, USA, Haití)
-    "Eliminatorias AFC": 35,      # Asia (Japón, Corea, Irak)
-    "Eliminatorias AFC": 32,       # <- Añadir para Japón, Corea del Sur, Arabia
-    "Copa Oro": 22,                # <-- ¡Asegúrate de que esta coma esté aquí!
-    "Eliminatorias CAF": 29,      # África (Eliminatorias Mundialistas)
-    "Asian Cup - Qualification": 35,
-    "UEFA Nations League": 5,     # Torneo europeo (Noruega, Suecia, etc.)
-    "Eliminatorias CONMEBOL": 340,
-    "Eliminatorias CONCACAF": 31,
-    "Copa Asiática": 7,           # <-- CORREGIDO: ID 17 para Selecciones Nacionales de Asia
-    " Asian Cup - Qualification": 35,
+    "Africa Cup of Nations": 6,
+    "Copa Asiática": 17,            # ID 17: Selecciones Nacionales de Asia
+    "Copa Oro": 22,
     "UEFA Nations League": 5,
-    "Friendlies": 10,              # Amistosos Internacionales de la FIFA
-    "CONCACAF Nations League": 536
+    "CONCACAF Nations League": 536,
+    "Eliminatorias CONMEBOL": 34,   # ID 34: Sudamérica (SIN DUPLICADOS)
+    "Eliminatorias UEFA": 32,       # ID 32: Europa
+    "Eliminatorias CONCACAF": 33,   # ID 33: Norte y Centroamérica
+    "Eliminatorias AFC": 35,        # ID 35: Asia (Japón, Corea, etc.)
+    "Eliminatorias CAF": 29,        # ID 29: África
+    "Friendlies": 10                # Amistosos Internacionales
 }
 
 TEMPORADAS = ["2023", "2024", "2025", "2026"]
