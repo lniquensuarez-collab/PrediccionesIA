@@ -167,4 +167,14 @@ fixture_id,date,tournament,home_team,away_team,home_score,away_score,HS,AS,HST,A
 1060869,2023-07-12,Copa Oro,USA,Panama,1,1,14,12,3,5,2,3,1,1,False
 1060870,2023-07-13,Copa Oro,Jamaica,Mexico,0,3,8,13,3,5,3,8,3,2,False
 1065809,2023-07-16,Copa Oro,Mexico,Panama,1,0,23,14,7,2,2,1,4,4,False
-
+1038681,2023-08-22,Copa Asiática,Al Wakrah,Navbahor,0,1,12,13,6,4,5,4,3,4,False
+1119513,2023-08-22,Copa Asiática,Al-Arabi SC,Olmaliq,0,1,17,9,1,2,6,4,1,2,False
+1123798,2023-09-18,Copa Asiática,Mumbai City,Nassaji Mazandaran,0,2,13,7,2,2,3,1,3,2,False
+1123800,2023-09-18,Copa Asiática,Al-Ittihad FC,Olmaliq,3,0,16,6,10,0,3,3,1,1,False
+1123799,2023-09-18,Copa Asiática,Al Faisaly,Nasaf,0,1,13,19,2,8,2,6,0,0,False
+1123797,2023-09-18,Copa Asiática,Al Quwa Al Jawiya,Sepahan FC,2,2,9,8,3,5,2,1,1,1,False
+1123801,2023-09-18,Copa Asiática,Al Sadd,Sharjah FC,0,0,15,5,2,1,4,5,3,3,False
+1123802,2023-09-18,Copa Asiática,Al-Hilal Saudi FC,Navbahor,1,1,20,5,6,2,12,1,1,2,False
+1123804,2023-09-19,Copa Asiática,Yokohama F. Marinos,Incheon United,2,4,22,14,7,3,13,3,1,2,False
+1123805,2023-09-19,Copa Asiática,Ulsan Hyundai FC,BG Pathum United,3,1,15,11,9,4,4,2,1,1,False
+1123807,2023-09-19,Copa Asiática,Johor Darul Takzim FC,Kawasaki Frontale,0,1,14,10,4,4,5,2,5,3,False
