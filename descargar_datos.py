@@ -19,7 +19,7 @@ COMPETICIONES = {
     "Euro": 4,
     "Copa America": 9,
     "Africa Cup of Nations": 6,
-    "Copa Asiática": 17,            # ID 17: Selecciones Nacionales de Asia
+    "Copa Asiática": 807,            # ID 17: Selecciones Nacionales de Asia
     "Copa Oro": 22,
     "UEFA Nations League": 5,
     "CONCACAF Nations League": 536,
@@ -28,6 +28,10 @@ COMPETICIONES = {
     "Eliminatorias CONCACAF": 33,   # ID 33: Norte y Centroamérica
     "Eliminatorias AFC": 35,        # ID 35: Asia (Japón, Corea, etc.)
     "Eliminatorias CAF": 29,        # ID 29: África
+    "COPA ASIA": 1008,
+    
+    "COPA AFRICA": 6,        # ID 6: África
+    
     "Friendlies": 10                # Amistosos Internacionales
 }
 
