@@ -252,3 +252,72 @@ fixture_id,date,tournament,home_team,away_team,home_score,away_score,HS,AS,HST,A
 1123879,2023-11-27,Copa Asiática,Nasaf,Al Faisaly,3,1,16,16,6,5,7,6,2,0,False
 1123881,2023-11-27,Copa Asiática,Al-Duhail SC,Istiqlol,2,0,13,9,2,1,4,8,3,2,False
 1123880,2023-11-27,Copa Asiática,Olmaliq,Al-Ittihad FC,1,2,8,18,3,10,4,8,1,0,False
+1123882,2023-11-27,Copa Asiática,Sepahan FC,Al Quwa Al Jawiya,1,0,6,16,1,7,3,3,5,5,False
+1123877,2023-11-27,Copa Asiática,Al-Nassr,Persepolis FC,0,0,6,12,1,4,4,2,2,3,False
+1123885,2023-11-28,Copa Asiática,Kawasaki Frontale,Johor Darul Takzim FC,5,0,12,6,8,3,2,3,2,5,False
+1123883,2023-11-28,Copa Asiática,Incheon United,Yokohama F. Marinos,2,1,11,13,4,6,3,6,2,1,False
+1123884,2023-11-28,Copa Asiática,BG Pathum United,Ulsan Hyundai FC,1,3,5,11,1,5,2,3,0,0,False
+1123886,2023-11-28,Copa Asiática,Shandong Luneng,Kaya,6,1,32,8,12,4,10,2,2,0,False
+1123890,2023-11-28,Copa Asiática,Nassaji Mazandaran,Mumbai City,2,0,9,5,2,0,7,5,2,2,False
+1123887,2023-11-28,Copa Asiática,Al Ain,Pakhtakor,1,3,9,16,5,6,2,4,2,2,False
+1123888,2023-11-28,Copa Asiática,Al-Fayha,Ahal,3,1,10,10,5,4,1,3,1,1,False
+1123889,2023-11-28,Copa Asiática,Navbahor,Al-Hilal Saudi FC,0,2,6,22,1,7,1,8,5,3,False
+1123893,2023-11-29,Copa Asiática,Urawa,Wuhan Three Towns,2,1,12,10,4,3,2,7,2,1,False
+1123892,2023-11-29,Copa Asiática,Ventforet Kofu,Melbourne City,3,3,14,8,7,5,9,2,0,2,False
+1123894,2023-11-29,Copa Asiática,Pohang Steelers,Ha Noi,2,0,15,8,4,2,3,1,0,0,False
+1123891,2023-11-29,Copa Asiática,Kitchee,Jeonbuk Motors,1,2,22,11,5,3,7,4,3,3,False
+1123895,2023-11-29,Copa Asiática,Hangzhou Greentown,Buriram United,3,2,17,18,8,6,8,7,4,4,False
+1123896,2023-11-29,Copa Asiática,Bangkok United,Home United,1,0,23,6,7,2,10,2,1,3,False
+1123898,2023-12-04,Copa Asiática,Al Quwa Al Jawiya,Olmaliq,3,2,18,9,8,5,5,4,2,1,False
+1123900,2023-12-04,Copa Asiática,Al Sadd,Nasaf,2,2,18,14,9,4,2,5,0,3,False
+1123899,2023-12-04,Copa Asiática,Al-Hilal Saudi FC,Nassaji Mazandaran,2,1,12,6,4,3,3,4,3,2,False
+1123902,2023-12-04,Copa Asiática,Mumbai City,Navbahor,1,2,16,10,5,3,5,5,3,2,False
+1123901,2023-12-04,Copa Asiática,Al Faisaly,Sharjah FC,2,1,14,11,5,3,6,4,4,11,False
+1123897,2023-12-04,Copa Asiática,Al-Ittihad FC,Sepahan FC,2,1,6,12,2,4,3,3,4,3,False
+1123903,2023-12-05,Copa Asiática,Pakhtakor,Al-Fayha,1,4,18,13,6,7,5,9,2,2,False
+1123904,2023-12-05,Copa Asiática,Ahal,Al Ain,1,2,16,12,7,7,8,1,1,1,False
+1123905,2023-12-05,Copa Asiática,Persepolis FC,Al-Duhail SC,1,2,20,10,5,4,12,1,2,4,False
+1123906,2023-12-05,Copa Asiática,Istiqlol,Al-Nassr,1,1,7,12,3,2,4,3,3,3,False
+1123908,2023-12-06,Copa Asiática,Ha Noi,Urawa,2,1,10,21,4,6,4,10,2,2,False
+1123907,2023-12-06,Copa Asiática,Wuhan Three Towns,Pohang Steelers,1,1,11,17,2,4,5,6,3,1,False
+1123909,2023-12-12,Copa Asiática,Melbourne City,Hangzhou Greentown,1,1,11,12,5,5,6,2,1,4,False
+1123910,2023-12-12,Copa Asiática,Buriram United,Ventforet Kofu,2,3,13,13,5,5,0,5,0,0,False
+1123912,2023-12-12,Copa Asiática,Johor Darul Takzim FC,BG Pathum United,4,1,22,7,10,2,5,4,2,5,False
+1123911,2023-12-12,Copa Asiática,Ulsan Hyundai FC,Kawasaki Frontale,2,2,17,16,6,8,7,4,1,1,False
+1123913,2023-12-13,Copa Asiática,Yokohama F. Marinos,Shandong Luneng,3,0,17,15,8,1,3,4,0,4,False
+1123914,2023-12-13,Copa Asiática,Kaya,Incheon United,1,3,7,20,2,7,3,9,0,0,False
+1123915,2023-12-13,Copa Asiática,Jeonbuk Motors,Bangkok United,3,2,23,8,10,5,8,3,0,0,False
+1123916,2023-12-13,Copa Asiática,Home United,Kitchee,0,2,9,13,3,4,5,5,0,1,False
+1155157,2024-02-13,Copa Asiática,Shandong Luneng,Kawasaki Frontale,2,3,20,7,9,4,11,3,2,4,False
+1155153,2024-02-14,Copa Asiática,Jeonbuk Motors,Pohang Steelers,2,0,14,16,4,3,8,3,1,1,False
+1155159,2024-02-14,Copa Asiática,Bangkok United,Yokohama F. Marinos,2,2,12,17,5,4,10,5,1,3,False
+1155145,2024-02-14,Copa Asiática,Nasaf,Al Ain,0,0,8,9,2,2,6,3,4,2,False
+1155147,2024-02-14,Copa Asiática,Al-Fayha,Al-Nassr,0,1,2,14,0,3,2,11,2,2,False
+1155155,2024-02-15,Copa Asiática,Ulsan Hyundai FC,Ventforet Kofu,3,0,11,6,3,4,1,2,0,1,False
+1155151,2024-02-15,Copa Asiática,Navbahor,Al-Ittihad FC,0,0,4,9,1,1,3,4,2,1,False
+1155149,2024-02-15,Copa Asiática,Sepahan FC,Al-Hilal Saudi FC,1,3,6,12,3,6,1,7,3,1,False
+1155158,2024-02-20,Copa Asiática,Kawasaki Frontale,Shandong Luneng,2,4,18,21,7,8,10,9,1,3,False
+1155154,2024-02-20,Copa Asiática,Pohang Steelers,Jeonbuk Motors,1,1,15,14,3,4,1,2,1,2,False
+1155156,2024-02-21,Copa Asiática,Ventforet Kofu,Ulsan Hyundai FC,1,2,27,7,9,3,8,0,1,3,False
+1155160,2024-02-21,Copa Asiática,Yokohama F. Marinos,Bangkok United,1,0,36,13,5,2,21,3,1,3,False
+1155146,2024-02-21,Copa Asiática,Al Ain,Nasaf,2,1,16,15,7,5,6,8,3,0,False
+1155148,2024-02-21,Copa Asiática,Al-Nassr,Al-Fayha,2,0,8,1,4,0,4,3,3,5,False
+1155152,2024-02-22,Copa Asiática,Al-Ittihad FC,Navbahor,2,1,22,6,4,0,12,4,1,1,False
+1155150,2024-02-22,Copa Asiática,Al-Hilal Saudi FC,Sepahan FC,3,1,18,13,10,3,4,1,0,1,False
+1175667,2024-03-04,Copa Asiática,Al Ain,Al-Nassr,1,0,9,16,4,5,4,4,5,4,False
+1175669,2024-03-05,Copa Asiática,Jeonbuk Motors,Ulsan Hyundai FC,1,1,12,11,4,5,5,8,1,1,False
+1175842,2024-03-05,Copa Asiática,Al-Hilal Saudi FC,Al-Ittihad FC,2,0,9,5,2,2,4,5,2,1,False
+1175671,2024-03-06,Copa Asiática,Shandong Luneng,Yokohama F. Marinos,1,2,22,15,5,5,8,3,4,1,False
+1175668,2024-03-11,Copa Asiática,Al-Nassr,Al Ain,4,3,30,11,9,5,9,4,4,4,False
+1175670,2024-03-12,Copa Asiática,Ulsan Hyundai FC,Jeonbuk Motors,1,0,10,12,4,4,5,9,2,1,False
+1175843,2024-03-12,Copa Asiática,Al-Ittihad FC,Al-Hilal Saudi FC,0,2,13,10,5,2,3,3,7,3,False
+1175672,2024-03-13,Copa Asiática,Yokohama F. Marinos,Shandong Luneng,1,0,15,23,7,8,2,5,4,4,False
+1184699,2024-04-17,Copa Asiática,Ulsan Hyundai FC,Yokohama F. Marinos,1,0,7,18,3,5,7,6,1,2,False
+1184570,2024-04-17,Copa Asiática,Al Ain,Al-Hilal Saudi FC,4,2,10,12,7,6,1,8,3,2,False
+1184571,2024-04-23,Copa Asiática,Al-Hilal Saudi FC,Al Ain,2,1,17,7,8,2,8,1,3,3,False
+1184700,2024-04-24,Copa Asiática,Yokohama F. Marinos,Ulsan Hyundai FC,3,2,14,40,5,15,5,15,1,0,False
+1197538,2024-05-11,Copa Asiática,Yokohama F. Marinos,Al Ain,2,1,18,11,8,5,6,1,2,1,False
+1197539,2024-05-25,Copa Asiática,Al Ain,Yokohama F. Marinos,5,1,16,12,6,7,4,5,2,1,False
+1060780,2023-09-07,CONCACAF Nations League,Trinidad and Tobago,Curaçao,1,0,8,14,2,3,7,6,3,3,False
+1060804,2023-09-07,CONCACAF Nations League,Sint Maarten,St. Lucia,1,5,0,0,0,0,9,3,0,0,False
+1060803,2023-09-07,CONCACAF Nations League,St. Kitts and Nevis,Guadeloupe,1,2,0,0,0,0,3,4,7,4,False
