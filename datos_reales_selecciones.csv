@@ -170,3 +170,78 @@ fixture_id,date,tournament,home_team,away_team,home_score,away_score,HS,AS,HST,A
 1060780,2023-09-07,CONCACAF Nations League,Trinidad and Tobago,Curaçao,1,0,8,14,2,3,7,6,3,3,False
 1060804,2023-09-07,CONCACAF Nations League,Sint Maarten,St. Lucia,1,5,0,0,0,0,9,3,0,0,False
 1060803,2023-09-07,CONCACAF Nations League,St. Kitts and Nevis,Guadeloupe,1,2,0,0,0,0,3,4,7,4,False
+1060779,2023-09-08,CONCACAF Nations League,Panama,Martinique,3,0,11,8,5,3,6,4,3,2,False
+1060781,2023-09-08,CONCACAF Nations League,Guatemala,El Salvador,2,0,15,15,7,6,5,8,3,1,False
+1060782,2023-09-08,CONCACAF Nations League,Haiti,Cuba,0,0,10,10,4,3,4,5,1,1,False
+1060807,2023-09-08,CONCACAF Nations League,Bermuda,French Guyana,0,0,0,0,0,0,2,4,1,2,False
+1060808,2023-09-08,CONCACAF Nations League,Belize,St. Vincent / Grenadines,1,2,0,0,0,0,7,3,1,2,False
+1060806,2023-09-08,CONCACAF Nations League,Barbados,Montserrat,2,3,0,0,0,0,2,6,6,3,False
+1060805,2023-09-08,CONCACAF Nations League,Dominican Republic,Nicaragua,0,2,0,0,0,0,8,1,2,6,False
+1060783,2023-09-08,CONCACAF Nations League,Grenada,Suriname,1,1,14,11,5,6,4,6,2,3,False
+1060784,2023-09-09,CONCACAF Nations League,Jamaica,Honduras,1,0,6,11,1,2,3,7,3,5,False
+1060809,2023-09-09,CONCACAF Nations League,Antigua and Barbuda,Guyana,1,5,0,0,0,0,7,1,1,1,False
+1060810,2023-09-09,CONCACAF Nations League,Bahamas,Puerto Rico,1,6,0,0,0,0,4,7,2,1,False
+1060811,2023-09-10,CONCACAF Nations League,Guadeloupe,Sint Maarten,4,0,0,0,0,0,3,2,2,2,False
+1060812,2023-09-10,CONCACAF Nations League,St. Lucia,St. Kitts and Nevis,2,0,0,0,0,0,9,2,0,0,False
+1060785,2023-09-11,CONCACAF Nations League,Guatemala,Panama,1,1,13,17,4,4,6,7,2,5,False
+1060787,2023-09-11,CONCACAF Nations League,El Salvador,Trinidad and Tobago,2,3,27,4,8,3,9,0,2,0,False
+1060786,2023-09-11,CONCACAF Nations League,Martinique,Curaçao,1,0,13,13,7,5,2,7,5,3,False
+1060855,2023-09-11,CONCACAF Nations League,Cayman Islands,Aruba,1,2,0,0,0,0,1,12,1,4,False
+1060837,2023-09-11,CONCACAF Nations League,Dominican Republic,Montserrat,3,0,0,0,0,0,5,4,1,3,False
+1060854,2023-09-11,CONCACAF Nations League,Saint Martin,Bonaire,2,1,0,0,0,0,17,2,2,3,False
+1060813,2023-09-12,CONCACAF Nations League,Nicaragua,Barbados,5,1,0,0,0,0,12,2,0,0,False
+1060816,2023-09-12,CONCACAF Nations League,St. Vincent / Grenadines,Bermuda,4,3,0,0,0,0,5,10,3,2,False
+1060815,2023-09-12,CONCACAF Nations League,French Guyana,Belize,0,2,0,0,0,0,6,2,4,2,False
+1060789,2023-09-12,CONCACAF Nations League,Cuba,Suriname,1,0,9,14,3,3,7,6,1,3,False
+1060856,2023-09-12,CONCACAF Nations League,Turks and Caicos Islands,Dominica,0,3,0,0,0,0,2,8,0,0,False
+1060817,2023-09-12,CONCACAF Nations League,Guyana,Bahamas,3,2,0,0,0,0,8,3,1,2,False
+1060818,2023-09-12,CONCACAF Nations League,Puerto Rico,Antigua and Barbuda,5,0,0,0,0,0,7,3,1,4,False
+1060788,2023-09-13,CONCACAF Nations League,Jamaica,Haiti,2,2,18,9,8,5,12,1,2,6,False
+1060790,2023-09-13,CONCACAF Nations League,Honduras,Grenada,4,0,26,3,12,0,11,1,0,1,False
+1060820,2023-10-12,CONCACAF Nations League,Sint Maarten,St. Kitts and Nevis,2,3,11,14,5,9,4,4,0,1,False
+1060858,2023-10-12,CONCACAF Nations League,Dominica,British Virgin Islands,1,1,25,7,8,4,11,2,1,1,False
+1060791,2023-10-12,CONCACAF Nations League,Suriname,Haiti,1,1,13,22,2,11,5,4,1,1,False
+1060793,2023-10-12,CONCACAF Nations League,Grenada,Jamaica,1,4,7,7,4,4,4,2,1,0,False
+1060857,2023-10-12,CONCACAF Nations League,Bonaire,Anguilla,2,0,10,1,4,0,6,1,0,1,False
+1060819,2023-10-13,CONCACAF Nations League,St. Lucia,Guadeloupe,2,1,11,15,6,6,3,2,2,1,False
+1060792,2023-10-13,CONCACAF Nations League,Cuba,Honduras,0,0,4,25,2,5,0,12,2,1,False
+1060821,2023-10-13,CONCACAF Nations League,Montserrat,Nicaragua,0,3,4,28,2,11,2,6,2,4,False
+1060823,2023-10-13,CONCACAF Nations League,St. Vincent / Grenadines,French Guyana,1,4,16,9,5,6,6,2,3,2,False
+1060794,2023-10-13,CONCACAF Nations League,Curaçao,Panama,1,2,8,14,6,5,4,4,1,2,False
+1060795,2023-10-13,CONCACAF Nations League,Martinique,El Salvador,1,0,4,8,2,1,0,1,0,0,False
+1060822,2023-10-14,CONCACAF Nations League,Barbados,Dominican Republic,0,5,4,20,0,5,1,6,5,5,False
+1060796,2023-10-14,CONCACAF Nations League,Trinidad and Tobago,Guatemala,3,2,10,24,5,11,5,14,5,1,False
+1060824,2023-10-14,CONCACAF Nations League,Belize,Bermuda,0,1,16,14,7,6,4,5,1,4,False
+1060825,2023-10-14,CONCACAF Nations League,Puerto Rico,Guyana,1,3,11,16,5,7,3,1,2,4,False
+1060859,2023-10-14,CONCACAF Nations League,Aruba,US Virgin Islands,3,1,20,6,9,4,3,4,0,2,False
+1060826,2023-10-14,CONCACAF Nations League,Bahamas,Antigua and Barbuda,1,4,4,20,2,12,0,5,0,2,False
+1060827,2023-10-15,CONCACAF Nations League,Guadeloupe,St. Lucia,2,0,17,7,6,3,5,2,1,1,False
+1060828,2023-10-15,CONCACAF Nations League,St. Kitts and Nevis,Sint Maarten,0,1,4,7,1,2,0,2,1,0,False
+1060797,2023-10-16,CONCACAF Nations League,Haiti,Jamaica,2,3,11,18,4,6,3,6,3,1,False
+1060798,2023-10-16,CONCACAF Nations League,Honduras,Cuba,4,0,27,2,11,2,11,1,0,2,False
+1060799,2023-10-16,CONCACAF Nations League,Suriname,Grenada,4,0,13,7,9,3,4,3,1,1,False
+1060861,2023-10-16,CONCACAF Nations League,Turks and Caicos Islands,British Virgin Islands,2,2,10,8,3,5,3,2,5,6,False
+1060860,2023-10-16,CONCACAF Nations League,Saint Martin,Anguilla,8,0,31,0,13,0,8,0,0,2,False
+1060831,2023-10-16,CONCACAF Nations League,French Guyana,St. Vincent / Grenadines,3,2,5,2,2,1,3,1,0,0,False
+1060830,2023-10-17,CONCACAF Nations League,Dominican Republic,Barbados,5,2,30,10,14,6,12,2,0,1,False
+1060829,2023-10-17,CONCACAF Nations League,Nicaragua,Montserrat,3,0,24,2,6,1,11,0,0,4,False
+1060800,2023-10-18,CONCACAF Nations League,Panama,Guatemala,3,0,16,5,8,1,9,4,1,2,False
+1060801,2023-10-18,CONCACAF Nations League,El Salvador,Martinique,0,0,19,10,4,2,9,3,3,1,False
+1060802,2023-10-18,CONCACAF Nations League,Curaçao,Trinidad and Tobago,5,3,24,17,10,4,5,6,1,2,False
+1060864,2023-11-16,CONCACAF Nations League,British Virgin Islands,Dominica,1,2,9,26,5,5,1,10,2,2,False
+1060835,2023-11-16,CONCACAF Nations League,St. Kitts and Nevis,St. Lucia,0,0,10,11,3,6,2,4,2,0,False
+1060863,2023-11-16,CONCACAF Nations League,US Virgin Islands,Aruba,1,4,6,17,1,8,1,4,2,1,False
+1060836,2023-11-16,CONCACAF Nations League,Sint Maarten,Guadeloupe,0,2,6,18,3,3,0,7,0,2,False
+1139205,2023-11-17,CONCACAF Nations League,USA,Trinidad and Tobago,3,0,26,1,8,0,10,0,0,4,False
+1139201,2023-11-17,CONCACAF Nations League,Costa Rica,Panama,0,3,14,14,3,5,4,3,5,1,False
+1060814,2023-11-17,CONCACAF Nations League,Montserrat,Dominican Republic,2,1,5,20,2,3,0,8,4,4,False
+1060838,2023-11-17,CONCACAF Nations League,Barbados,Nicaragua,0,4,5,17,2,8,4,0,3,1,False
+1060839,2023-11-17,CONCACAF Nations League,Bermuda,St. Vincent / Grenadines,3,1,14,17,8,4,3,3,1,3,False
+1139140,2023-11-18,CONCACAF Nations League,Honduras,Mexico,2,0,12,8,6,2,4,4,3,3,False
+1060840,2023-11-18,CONCACAF Nations League,Belize,French Guyana,1,0,6,16,1,7,1,3,0,1,False
+1139203,2023-11-18,CONCACAF Nations League,Jamaica,Canada,1,2,6,18,2,7,2,3,3,0,False
+1060841,2023-11-18,CONCACAF Nations League,Antigua and Barbuda,Puerto Rico,2,3,11,19,6,10,6,2,2,3,False
+1060865,2023-11-18,CONCACAF Nations League,Anguilla,Bonaire,0,3,2,15,0,8,1,2,2,2,False
+1060844,2023-11-19,CONCACAF Nations League,St. Lucia,Sint Maarten,1,2,20,14,10,7,9,3,1,0,False
+1060843,2023-11-19,CONCACAF Nations League,Guadeloupe,St. Kitts and Nevis,5,0,26,6,13,1,5,3,2,3,False
+1060867,2023-11-20,CONCACAF Nations League,Dominica,Turks and Caicos Islands,2,0,18,8,7,2,5,2,2,2,False
