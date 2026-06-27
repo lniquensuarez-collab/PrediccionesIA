@@ -245,3 +245,21 @@ fixture_id,date,tournament,home_team,away_team,home_score,away_score,HS,AS,HST,A
 1060844,2023-11-19,CONCACAF Nations League,St. Lucia,Sint Maarten,1,2,20,14,10,7,9,3,1,0,False
 1060843,2023-11-19,CONCACAF Nations League,Guadeloupe,St. Kitts and Nevis,5,0,26,6,13,1,5,3,2,3,False
 1060867,2023-11-20,CONCACAF Nations League,Dominica,Turks and Caicos Islands,2,0,18,8,7,2,5,2,2,2,False
+1060866,2023-11-20,CONCACAF Nations League,Aruba,Cayman Islands,5,1,21,5,9,3,11,1,0,3,False
+1060846,2023-11-20,CONCACAF Nations League,Montserrat,Barbados,4,2,12,9,8,4,6,7,2,4,False
+1139206,2023-11-21,CONCACAF Nations League,Trinidad and Tobago,USA,2,1,10,10,5,5,2,6,1,4,False
+1139202,2023-11-21,CONCACAF Nations League,Panama,Costa Rica,3,1,10,13,4,3,3,4,2,1,False
+1060848,2023-11-21,CONCACAF Nations League,St. Vincent / Grenadines,Belize,3,0,17,8,9,3,4,1,1,3,False
+1060847,2023-11-21,CONCACAF Nations League,French Guyana,Bermuda,3,0,20,9,7,2,6,2,2,1,False
+1060868,2023-11-21,CONCACAF Nations League,Bonaire,Saint Martin,0,4,4,10,0,4,1,5,3,1,False
+1060849,2023-11-22,CONCACAF Nations League,Guyana,Antigua and Barbuda,6,0,19,11,13,3,3,2,1,1,False
+1060850,2023-11-22,CONCACAF Nations League,Puerto Rico,Bahamas,6,1,28,3,10,1,9,0,1,1,False
+1139204,2023-11-22,CONCACAF Nations League,Canada,Jamaica,2,3,17,8,7,5,4,2,0,5,False
+1060845,2023-11-22,CONCACAF Nations League,Nicaragua,Dominican Republic,0,0,15,11,6,4,6,4,4,3,False
+1139141,2023-11-22,CONCACAF Nations League,Mexico,Honduras,2,0,38,3,11,2,17,1,6,8,False
+1143862,2024-03-21,CONCACAF Nations League,USA,Jamaica,3,1,25,6,7,3,12,3,1,3,False
+1143861,2024-03-22,CONCACAF Nations League,Panama,Mexico,0,3,18,6,5,6,7,4,1,1,False
+1144239,2024-03-23,CONCACAF Nations League,Canada,Trinidad and Tobago,2,0,16,6,6,2,14,0,2,2,False
+1144240,2024-03-23,CONCACAF Nations League,Costa Rica,Honduras,3,1,13,7,5,3,2,6,1,1,False
+1187488,2024-03-24,CONCACAF Nations League,Panama,Jamaica,0,1,10,11,4,2,5,6,3,0,False
+1187487,2024-03-25,CONCACAF Nations League,Mexico,USA,0,2,11,9,6,2,7,4,1,4,False
