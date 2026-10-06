@@ -1,4 +1,6 @@
 import requests
+import sqlite3
+import pandas as pd
 import pandas as pd
 import time
 import os
@@ -12,7 +14,7 @@ API_KEY = os.environ.get("RAPIDAPI_KEY")
 HEADERS = {
     "x-apisports-key": API_KEY
 }
-
+conn = sqlite3.connect('data/futbol.db')
 # IDs Corregidos a la base de datos oficial
 COMPETICIONES = {
     "World Cup": 1,
@@ -29,9 +31,7 @@ COMPETICIONES = {
     "Eliminatorias AFC": 35,        # ID 35: Asia (Japón, Corea, etc.)
     "Eliminatorias CAF": 29,        # ID 29: África
     "COPA ASIA": 1008,
-    
     "COPA AFRICA": 6,        # ID 6: África
-    
     "Friendlies": 10                # Amistosos Internacionales
 }
 
